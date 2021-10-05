@@ -1,0 +1,10 @@
+// app global css in SCSS form
+@font-face {
+  font-family: CustomFont;
+  src: url(../fonts/Convergence_Regular.10.ttf);
+}
+
+// declare a class which applies it
+* {
+  font-family: "CustomFont";
+}

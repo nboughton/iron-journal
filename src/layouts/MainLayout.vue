@@ -7,6 +7,8 @@
         <q-toolbar-title>
           <q-input input-class="text-h5" v-model="campaign.data.name" borderless />
         </q-toolbar-title>
+
+        <q-btn v-if="config.data.saving" icon="save" flat dense disable />
         <q-btn icon="mdi-dice-6" flat dense @click="showRoller = !showRoller">
           <q-tooltip>Toggle Dice Roller</q-tooltip>
         </q-btn>
@@ -189,7 +191,7 @@
     </q-dialog>
 
     <q-dialog v-model="showAbout">
-      <q-card class="my-card">
+      <q-card class="card-bg">
         <q-card-section class="row bg-secondary text-h6 justify-between">
           <div class="col-grow">About</div>
           <q-btn class="col-shrink" flat dense icon="close" @click="showAbout = false" />

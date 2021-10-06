@@ -278,10 +278,9 @@
 import { defineComponent, ref } from 'vue';
 
 import { useCampaign } from 'src/store/campaign';
-import { useQuasar } from 'quasar';
 import { useConfig } from 'src/store/config';
 
-import { NewProgressTrack } from 'src/lib/campaign';
+import { NewProgressTrack } from 'src/lib/tracks';
 
 import ResourceTrack from 'src/components/Tracks/ResourceTrack.vue';
 import ProgressTrack from 'src/components/Tracks/ProgressTrack.vue';
@@ -338,8 +337,6 @@ export default defineComponent({
       campaign.data.character.tracks.momentum.value = n;
     };
 
-    const $q = useQuasar();
-
     const config = useConfig();
 
     return {
@@ -355,7 +352,6 @@ export default defineComponent({
       showAssetSelect,
 
       markDebility,
-      $q,
 
       burnMomentum,
       config,

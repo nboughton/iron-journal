@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-borders q-pa-sm my-card">
+  <div class="rounded-borders q-pa-sm card-bg">
     <div class="row">
       <q-input class="col-grow" label="Name" dense v-model="data.name" debounce="750">
         <template v-slot:append v-if="$q.screen.lt.sm">
@@ -177,10 +177,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from 'vue';
-import ProgressTrack from 'src/components/Tracks/ProgressTrack.vue';
+
 import { ISite } from './models';
+
 import { useConfig } from 'src/store/config';
-import { useQuasar } from 'quasar';
+
+import ProgressTrack from 'src/components/Tracks/ProgressTrack.vue';
 
 export default defineComponent({
   name: 'Site',
@@ -204,13 +206,11 @@ export default defineComponent({
     const removeSite = () => ctx.emit('deleteSite');
 
     const config = useConfig();
-    const $q = useQuasar();
 
     return {
       data,
       updateValue,
       removeSite,
-      $q,
 
       config,
     };

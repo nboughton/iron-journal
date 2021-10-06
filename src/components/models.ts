@@ -133,14 +133,20 @@ export interface IJournalEntry {
 export interface ILocation {
   name: string;
   region: string;
-  description: string;
+  type: string; // Location
+  descriptor: string;
   trouble: string;
-
+  notes: string;
 }
 
 export interface INPC {
   name: string;
-  description: string;
+  role: string;
+  goal: string;
+  descriptor: string;
+  disposition: string;
+  activity: string;
+  notes: string;
   track?: IProgressTrack;
 }
 
@@ -184,16 +190,29 @@ export interface ISite {
   denizens: IDenizens;
 }
 
+export interface IMapCell {
+  name: string
+  sites: ISite[]
+  locations: ILocation[]
+  npcs: INPC[]
+}
+
+export interface IMap {
+  name: string
+  image: string;
+  height: number
+  width: number
+  cells: { [index: string]: IMapCell }
+}
+
 export interface ICampaign {
   id: string;
   name: string;
   character: ICharacter;
   progressTracks: IProgressTrack[];
   journal: IJournalEntry[];
-  npcs: INPC[];
-  locations: ILocation[];
+  maps: IMap[]
   truths: ITruths;
-  sites: ISite[];
 }
 
 // Moves

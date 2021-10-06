@@ -18,7 +18,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
+
 import { IOracle } from 'src/components/models';
+
 import { oracleRoll } from 'src/lib/roll';
 
 export default defineComponent({

@@ -1,8 +1,8 @@
 <template>
   <router-view v-if="loaded" />
   <div v-else>
-    <div class="column q-pa-xl text-h5 self-center" style="height: 100% width: 100%">
-      <div v-for="(line, i) in msg" :key="i">
+    <div class="column q-pa-xl text-h4 self-center" style="height: 100% width: 100%">
+      <div class="norse" v-for="(line, i) in msg" :key="i">
         {{ line }}
       </div>
     </div>
@@ -37,18 +37,18 @@ export default defineComponent({
 
     const campaign = useCampaign();
     onMounted(async () => {
-      await writeLine('Retrieving scrolls...');
+      await writeLine('Checking the perimeter...');
       await sleep(500);
-      await writeLine('Tuning lute...');
+      await writeLine('Tasting the wind...');
       await campaign.populateStore().catch((err) => console.log(err));
       await sleep(500);
 
-      await writeLine('Preparing the stage...');
+      await writeLine('Sharpening our blades...');
       const assets = useAssets();
       await assets.populateStore().catch((err) => console.log(err));
       await sleep(500);
 
-      await writeLine('Welcome ' + campaign.data.character.name);
+      await writeLine('Your time has come, ' + campaign.data.character.name);
       await sleep(500);
       loaded.value = true;
     });

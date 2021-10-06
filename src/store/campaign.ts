@@ -86,26 +86,6 @@ export const useCampaign = defineStore({
       try {
         const campaign = await db.campaign.get(id);
         this.data = campaign as ICampaign;
-        // ADD in truths as necessary
-        if (this.data.truths === undefined) {
-          this.data.truths = {
-            theOldWorld: '',
-            iron: '',
-            legacies: '',
-            communities: '',
-            leaders: '',
-            defense: '',
-            mysticism: '',
-            religion: '',
-            firstBorn: '',
-            beasts: '',
-            horrors: '',
-          };
-        }
-        // Add Sites as it might be missing from older sheets
-        if (this.data.sites === undefined) {
-          this.data.sites = [];
-        }
       } catch (err) {
         console.log(err);
       }

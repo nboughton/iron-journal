@@ -5,7 +5,7 @@
         <q-btn dense flat icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          {{ campaign.data.name }}
+          <q-input input-class="text-h5" v-model="campaign.data.name" borderless />
         </q-toolbar-title>
         <q-btn icon="mdi-dice-6" flat dense @click="showRoller = !showRoller">
           <q-tooltip>Toggle Dice Roller</q-tooltip>
@@ -17,7 +17,7 @@
       </q-toolbar>
 
       <q-tabs align="center" dense>
-        <q-route-tab to="/tale" label="The Tale" />
+        <!--q-route-tab to="/tale" label="The Tale" /-->
         <q-route-tab to="/truths" label="Truths" />
         <q-route-tab to="/" :label="campaign.data.character.name" />
         <q-route-tab to="/npcs" label="NPCs" />

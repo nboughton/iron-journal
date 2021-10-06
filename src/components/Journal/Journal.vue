@@ -88,14 +88,14 @@
 /* eslint-disable no-unused-vars */
 import { defineComponent, ref } from 'vue';
 
-import { IJournalEntry } from './models';
+import { IJournalEntry } from 'src/components/models';
 
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 
 import { NewJournal } from 'src/lib/campaign';
 
-import JournalEntry from 'src/components/JournalEntry.vue';
+import JournalEntry from 'src/components/Journal/JournalEntry.vue';
 
 export default defineComponent({
   name: 'Journal',

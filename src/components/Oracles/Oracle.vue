@@ -17,33 +17,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue'
-import { IOracle } from './models'
-import { oracleRoll } from 'src/lib/roll'
+import { defineComponent, ref, PropType } from 'vue';
+import { IOracle } from 'src/components/models';
+import { oracleRoll } from 'src/lib/roll';
 
 export default defineComponent({
   name: 'Oracles',
   props: {
     label: {
-      type: String
+      type: String,
     },
     oracle: {
-      type: Object as PropType<{ [index: string]: IOracle}>,
-      required: true
-    }
+      type: Object as PropType<{ [index: string]: IOracle }>,
+      required: true,
+    },
   },
   setup(props) {
-    const tables = Object.keys(props.oracle)
-    const select = ref('')
-    const results = ref([] as string[])
-    const click = () => (results.value.push(select.value + ': ' + oracleRoll(props.oracle[select.value])))
+    const tables = Object.keys(props.oracle);
+    const select = ref('');
+    const results = ref([] as string[]);
+    const click = () => results.value.push(select.value + ': ' + oracleRoll(props.oracle[select.value]));
 
     return {
       tables,
       select,
       results,
-      click
-    }
-  }
-})
+      click,
+    };
+  },
+});
 </script>

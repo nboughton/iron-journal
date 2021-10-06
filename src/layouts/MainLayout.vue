@@ -17,12 +17,8 @@
       </q-toolbar>
 
       <q-tabs align="center" dense>
-        <!--q-route-tab to="/tale" label="The Tale" /-->
         <q-route-tab to="/truths" label="Truths" />
         <q-route-tab to="/" :label="campaign.data.character.name" />
-        <q-route-tab to="/npcs" label="NPCs" />
-        <q-route-tab to="/locations" label="Locations" />
-        <q-route-tab to="/sites" label="Delves" />
       </q-tabs>
     </q-header>
 
@@ -228,14 +224,16 @@
 <script lang="ts">
 /* eslint-disable no-unused-vars */
 import { ref, defineComponent, computed } from 'vue';
+
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 import { useQuasar } from 'quasar';
-import Oracles from 'src/components/Oracles.vue';
+import { useAssets } from 'src/store/assets';
+
+import Journal from 'src/components/Journal/Journal.vue';
+import Oracles from 'src/components/Oracles/Oracles.vue';
 import Moves from 'src/components/Moves.vue';
 import Roller from 'src/components/Roller.vue';
-import { useAssets } from 'src/store/assets';
-import Journal from 'src/components/Journal.vue';
 
 export default defineComponent({
   components: { Oracles, Moves, Roller, Journal },

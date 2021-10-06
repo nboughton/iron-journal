@@ -30,19 +30,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import Oracle from 'src/components/Oracle.vue'
-import { Plot } from 'src/lib/oracles/plot'
-import { Location } from 'src/lib/oracles/location'
-import { Character } from 'src/lib/oracles/character'
-import { Names } from 'src/lib/oracles/names'
-import { Feature } from 'src/lib/oracles/delve/feature'
-import { SiteName } from 'src/lib/oracles/delve/site_name'
-import { SiteNature, ThemeFeatures, ThemeDangers, DomainFeatures, DomainDangers } from 'src/lib/oracles/delve/site_nature'
-import { Monstrosity } from 'src/lib/oracles/delve/monstrosity'
-import { Trap } from 'src/lib/oracles/delve/trap'
-import { CombatEvent } from 'src/lib/oracles/delve/combat_event'
-import { Threat } from 'src/lib/oracles/delve/threat'
+import { defineComponent } from 'vue';
+import Oracle from 'src/components/Oracles/Oracle.vue';
+import { Plot } from 'src/lib/oracles/plot';
+import { Location } from 'src/lib/oracles/location';
+import { Character } from 'src/lib/oracles/character';
+import { Names } from 'src/lib/oracles/names';
+import { Feature } from 'src/lib/oracles/delve/feature';
+import { SiteName } from 'src/lib/oracles/delve/site_name';
+import {
+  SiteNature,
+  ThemeFeatures,
+  ThemeDangers,
+  DomainFeatures,
+  DomainDangers,
+} from 'src/lib/oracles/delve/site_nature';
+import { Monstrosity } from 'src/lib/oracles/delve/monstrosity';
+import { Trap } from 'src/lib/oracles/delve/trap';
+import { CombatEvent } from 'src/lib/oracles/delve/combat_event';
+import { Threat } from 'src/lib/oracles/delve/threat';
 
 export default defineComponent({
   name: 'Oracles',
@@ -64,8 +70,8 @@ export default defineComponent({
       Monstrosity,
       Trap,
       CombatEvent,
-      Threat
-    }
-  }
-})
+      Threat,
+    };
+  },
+});
 </script>

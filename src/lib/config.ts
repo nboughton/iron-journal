@@ -5,6 +5,7 @@ export function NewConfig (): IConfig {
     id: 1,
     current: '',
     index: [],
-    edit: true
+    edit: true,
+    saving: false
   }
 }

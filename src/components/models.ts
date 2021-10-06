@@ -15,6 +15,7 @@ export interface IConfig {
   current: string;
   index: IIndexItem[];
   edit: boolean;
+  saving: boolean;
 }
 
 // Stats and Tracks

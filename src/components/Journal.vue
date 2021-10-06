@@ -12,13 +12,7 @@
       label="Search by title or content"
     >
       <template v-slot:before>
-        <q-btn
-          class="col-shrink"
-          icon="add_circle"
-          flat
-          dense
-          @click="addJournal"
-        >
+        <q-btn class="col-shrink" icon="add_circle" flat dense @click="addJournal">
           <q-tooltip>Add a journal entry</q-tooltip>
         </q-btn>
       </template>
@@ -30,19 +24,37 @@
 
   <!-- Pinned -->
   <div v-for="(journal, index) in campaign.data.journal" :key="index">
-    <journal-entry v-if="journal.pinned" :index="index" open @imgUpload="journalEntryID = 0; imageToLoad = null; showImageLoad = true" @remove="removeJournal(index)"/>
+    <journal-entry
+      v-if="journal.pinned"
+      :index="index"
+      open
+      @imgUpload="
+        journalEntryID = index;
+        imageToLoad = null;
+        showImageLoad = true;
+      "
+      @remove="removeJournal(index)"
+    />
   </div>
 
   <!-- Not pinned -->
   <div v-for="(journal, index) in campaign.data.journal" :key="index">
-    <journal-entry v-if="showJournal(journal) && !journal.pinned" :index="index" :open="index === 0" @imgUpload="journalEntryID = 0; imageToLoad = null; showImageLoad = true" @remove="removeJournal(index)"/>
+    <journal-entry
+      v-if="showJournal(journal) && !journal.pinned"
+      :index="index"
+      :open="index === 0"
+      @imgUpload="
+        journalEntryID = index;
+        imageToLoad = null;
+        showImageLoad = true;
+      "
+      @remove="removeJournal(index)"
+    />
   </div>
 
   <q-dialog v-model="showImageLoad">
     <q-card class="card-bg">
-      <q-card-section class="text-center text-bold bg-secondary"
-        >Upload Image</q-card-section
-      >
+      <q-card-section class="text-center text-bold bg-secondary">Upload Image</q-card-section>
 
       <q-card-section>
         <q-file
@@ -66,13 +78,7 @@
 
       <q-card-actions align="center">
         <q-btn label="Save" flat color="primary" @click="loadImage" />
-        <q-btn
-          label="Close"
-          flat
-          color="warning"
-          dense
-          @click="showImageLoad = false"
-        />
+        <q-btn label="Close" flat color="warning" dense @click="showImageLoad = false" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -80,87 +86,83 @@
 
 <script lang="ts">
 /* eslint-disable no-unused-vars */
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue';
 
-import { IJournalEntry } from './models'
+import { IJournalEntry } from './models';
 
-import { useCampaign } from 'src/store/campaign'
-import { useConfig } from 'src/store/config'
+import { useCampaign } from 'src/store/campaign';
+import { useConfig } from 'src/store/config';
 
-import { NewJournal } from 'src/lib/campaign'
+import { NewJournal } from 'src/lib/campaign';
 
-import JournalEntry from 'src/components/JournalEntry.vue'
+import JournalEntry from 'src/components/JournalEntry.vue';
 
 export default defineComponent({
   name: 'Journal',
   components: { JournalEntry },
   setup() {
-    const campaign = useCampaign()
-    const config = useConfig()
+    const campaign = useCampaign();
+    const config = useConfig();
 
-    const addJournal = () => campaign.data.journal.unshift(NewJournal())
-    const removeJournal = (index: number) =>
-      campaign.data.journal.splice(index, 1)
+    const addJournal = () => campaign.data.journal.unshift(NewJournal());
+    const removeJournal = (index: number) => campaign.data.journal.splice(index, 1);
 
-    const filter = ref('')
+    const filter = ref('');
     const showJournal = (journal: IJournalEntry): boolean => {
       if (filter.value === '' || filter.value === null) {
-        return true
+        return true;
       }
 
       if (journal.title !== undefined) {
         if (RegExp(filter.value, 'i').test(journal.title)) {
-          return true
+          return true;
         }
       }
 
       if (journal.content !== undefined) {
         if (RegExp(filter.value, 'i').test(journal.content)) {
-          return true
+          return true;
         }
       }
-      return false
-    }
+      return false;
+    };
 
     enum imageFloat {
       Left = 'left',
       Right = 'right',
       None = 'none',
     }
-    const imageFloatSelect = ref(imageFloat.None)
-    const imageToLoad = ref(null)
-    const journalEntryID = ref(0)
-    const showImageLoad = ref(false)
+    const imageFloatSelect = ref(imageFloat.None);
+    const imageToLoad = ref(null);
+    const journalEntryID = ref(0);
+    const showImageLoad = ref(false);
     const loadImage = () => {
-      const f: File = imageToLoad.value as unknown as File
+      const f: File = imageToLoad.value as unknown as File;
 
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (ev) => {
-        const img = ev.target?.result
-        let imgClass = 'journal-img'
+        const img = ev.target?.result;
+        let imgClass = 'journal-img';
         if (imageFloatSelect.value === imageFloat.Left) {
-          imgClass += ' float-left'
+          imgClass += ' float-left';
         }
         if (imageFloatSelect.value === imageFloat.Right) {
-          imgClass += ' float-right'
+          imgClass += ' float-right';
         }
-        campaign.appendToJournal(
-          journalEntryID.value,
-          `<img class="${imgClass}" src="${img as string}" />`
-        )
-      }
+        campaign.appendToJournal(journalEntryID.value, `<img class="${imgClass}" src="${img as string}" />`);
+      };
 
-      reader.readAsDataURL(f)
-      showImageLoad.value = false
-    }
+      reader.readAsDataURL(f);
+      showImageLoad.value = false;
+    };
 
     // pin, pinIcon
     const pinIcon = (index: number): string => {
-      return campaign.data.journal[index].pinned ? 'mdi-pin' : 'mdi-pin-off'
-    }
+      return campaign.data.journal[index].pinned ? 'mdi-pin' : 'mdi-pin-off';
+    };
     const pin = (index: number) => {
-      campaign.data.journal[index].pinned = !campaign.data.journal[index].pinned
-    }
+      campaign.data.journal[index].pinned = !campaign.data.journal[index].pinned;
+    };
 
     return {
       showJournal,
@@ -176,8 +178,8 @@ export default defineComponent({
       pin,
       filter,
       config,
-      campaign
-    }
-  }
-})
+      campaign,
+    };
+  },
+});
 </script>

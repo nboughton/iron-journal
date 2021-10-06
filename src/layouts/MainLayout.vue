@@ -28,31 +28,13 @@
 
     <q-drawer elevated overlay v-model="leftDrawerOpen" side="left" bordered>
       <!-- left drawer content -->
-      <q-btn
-        class="full-width"
-        label="New Campaign"
-        flat
-        @click="addCampaign"
-        icon-right="add"
-      />
+      <q-btn class="full-width" label="New Campaign" flat @click="addCampaign" icon-right="add" />
       <q-list>
-        <q-item
-          class="items-center"
-          v-for="(item, index) in config.data.index"
-          :key="index"
-          clickable
-          v-ripple
-        >
-          <q-item-section
-            @click="config.data.current = item.id"
-            class="row full-width no-wrap"
-          >
+        <q-item class="items-center" v-for="(item, index) in config.data.index" :key="index" clickable v-ripple>
+          <q-item-section @click="config.data.current = item.id" class="row full-width no-wrap">
             {{ item.name }}
           </q-item-section>
-          <q-item-section
-            class="col-shrink"
-            v-if="config.data.index.length > 1 && config.data.edit"
-          >
+          <q-item-section class="col-shrink" v-if="config.data.index.length > 1 && config.data.edit">
             <q-btn icon="delete" flat dense @click="removeCampaign(item.id)" />
           </q-item-section>
         </q-item>
@@ -67,10 +49,7 @@
           </q-item-section>
           <q-item-section>
             Export Campaign Data
-            <q-tooltip
-              >Downlaod your current campaign database as a .json
-              file</q-tooltip
-            >
+            <q-tooltip>Downlaod your current campaign database as a .json file</q-tooltip>
           </q-item-section>
         </q-item>
 
@@ -107,6 +86,19 @@
         </q-item>
 
         <q-separator size="lg" />
+
+        <q-item clickable v-ripple @click="campaign.exportJournal">
+          <q-item-section avatar>
+            <q-icon name="download" />
+          </q-item-section>
+          <q-item-section>
+            Export Journal
+            <q-tooltip>Export Journal as and HTML file</q-tooltip>
+          </q-item-section>
+        </q-item>
+
+        <q-separator size="lg" />
+
         <q-item clickable v-ripple @click="showAbout = true">
           <q-item-section avatar>
             <q-icon name="info" />
@@ -119,13 +111,7 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer
-      show-if-above
-      v-model="rightDrawerOpen"
-      side="right"
-      :width="width"
-      bordered
-    >
+    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" :width="width" bordered>
       <!-- right drawer content -->
       <div class="row">
         <q-expansion-item class="col-12">
@@ -154,13 +140,10 @@
 
     <q-dialog v-model="showDataLoad">
       <q-card>
-        <q-card-section class="text-center text-bold bg-secondary">
-          Load Character Database
-        </q-card-section>
+        <q-card-section class="text-center text-bold bg-secondary"> Load Character Database </q-card-section>
 
         <q-card-section class="text-subtitle">
-          Please bear in mind that this data will overwrite any existing
-          versions of the same Campaigns
+          Please bear in mind that this data will overwrite any existing versions of the same Campaigns
         </q-card-section>
 
         <q-card-section>
@@ -174,31 +157,22 @@
 
         <q-card-actions align="center">
           <q-btn label="load" color="primary" @click="loadData" flat />
-          <q-btn
-            label="close"
-            color="warning"
-            @click="showDataLoad = false"
-            flat
-          />
+          <q-btn label="close" color="warning" @click="showDataLoad = false" flat />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
     <q-dialog v-model="showAssetLoad">
       <q-card>
-        <q-card-section class="text-center text-bold bg-secondary">
-          Load Custom Assets
-        </q-card-section>
+        <q-card-section class="text-center text-bold bg-secondary"> Load Custom Assets </q-card-section>
 
         <q-card-section class="text-subtitle text-center">
           <q-icon name="warning" size="xl" color="warning" />
           <div class="text-justify">
-            Warning: loading user supplied asset data can be risky. Iron Journal
-            attempts to strip any potentially malicious code (i.e script tags in
-            asset items) but cannot absolutely guarantee the safety of any data
-            loaded. Please check over the contents of the Asset file before
-            loading it. And always ensure you only load data from sources you
-            trust.
+            Warning: loading user supplied asset data can be risky. Iron Journal attempts to strip any potentially
+            malicious code (i.e script tags in asset items) but cannot absolutely guarantee the safety of any data
+            loaded. Please check over the contents of the Asset file before loading it. And always ensure you only load
+            data from sources you trust.
           </div>
         </q-card-section>
 
@@ -213,12 +187,7 @@
 
         <q-card-actions align="center">
           <q-btn label="load" color="primary" @click="loadAssetData" flat />
-          <q-btn
-            label="close"
-            color="warning"
-            @click="showAssetLoad = false"
-            flat
-          />
+          <q-btn label="close" color="warning" @click="showAssetLoad = false" flat />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -227,13 +196,7 @@
       <q-card class="my-card">
         <q-card-section class="row bg-secondary text-h6 justify-between">
           <div class="col-grow">About</div>
-          <q-btn
-            class="col-shrink"
-            flat
-            dense
-            icon="close"
-            @click="showAbout = false"
-          />
+          <q-btn class="col-shrink" flat dense icon="close" @click="showAbout = false" />
         </q-card-section>
 
         <q-card-section class="about-text text-justify">
@@ -264,71 +227,71 @@
 
 <script lang="ts">
 /* eslint-disable no-unused-vars */
-import { ref, defineComponent, computed } from 'vue'
-import { useCampaign } from 'src/store/campaign'
-import { useConfig } from 'src/store/config'
-import { useQuasar } from 'quasar'
-import Oracles from 'src/components/Oracles.vue'
-import Moves from 'src/components/Moves.vue'
-import Roller from 'src/components/Roller.vue'
-import { useAssets } from 'src/store/assets'
-import Journal from 'src/components/Journal.vue'
+import { ref, defineComponent, computed } from 'vue';
+import { useCampaign } from 'src/store/campaign';
+import { useConfig } from 'src/store/config';
+import { useQuasar } from 'quasar';
+import Oracles from 'src/components/Oracles.vue';
+import Moves from 'src/components/Moves.vue';
+import Roller from 'src/components/Roller.vue';
+import { useAssets } from 'src/store/assets';
+import Journal from 'src/components/Journal.vue';
 
 export default defineComponent({
   components: { Oracles, Moves, Roller, Journal },
   setup() {
-    const leftDrawerOpen = ref(false)
-    const rightDrawerOpen = ref(false)
+    const leftDrawerOpen = ref(false);
+    const rightDrawerOpen = ref(false);
 
-    const campaign = useCampaign()
-    const config = useConfig()
+    const campaign = useCampaign();
+    const config = useConfig();
 
-    const addCampaign = () => campaign.new()
-    const removeCampaign = (id: string) => campaign.delete(id)
+    const addCampaign = () => campaign.new();
+    const removeCampaign = (id: string) => campaign.delete(id);
 
-    const fileToLoad = ref(null)
-    const showDataLoad = ref(false)
+    const fileToLoad = ref(null);
+    const showDataLoad = ref(false);
     const loadData = async () => {
-      const f: File = fileToLoad.value as unknown as File
-      await campaign.loadData(f)
-      showDataLoad.value = false
-    }
+      const f: File = fileToLoad.value as unknown as File;
+      await campaign.loadData(f);
+      showDataLoad.value = false;
+    };
 
-    const customAssets = useAssets()
-    const assetsToLoad = ref(null)
-    const showAssetLoad = ref(false)
+    const customAssets = useAssets();
+    const assetsToLoad = ref(null);
+    const showAssetLoad = ref(false);
     const loadAssetData = async () => {
-      const f: File = assetsToLoad.value as unknown as File
-      await customAssets.loadData(f)
-      showAssetLoad.value = false
-    }
+      const f: File = assetsToLoad.value as unknown as File;
+      await customAssets.loadData(f);
+      showAssetLoad.value = false;
+    };
 
-    const $q = useQuasar()
+    const $q = useQuasar();
     const width = computed((): number => {
       if ($q.screen.lt.sm || $q.platform.is.mobile) {
-        return Math.floor($q.screen.width * 0.9)
+        return Math.floor($q.screen.width * 0.9);
       }
-      return Math.floor($q.screen.width * 0.4)
-    })
+      return Math.floor($q.screen.width * 0.4);
+    });
     const btnSize = computed((): string => {
       if ($q.screen.lt.sm) {
-        return 'sm'
+        return 'sm';
       }
-      return 'md'
-    })
+      return 'md';
+    });
 
-    const showRoller = ref(false)
-    const showAbout = ref(false)
+    const showRoller = ref(false);
+    const showAbout = ref(false);
 
     return {
       leftDrawerOpen,
       toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value
+        leftDrawerOpen.value = !leftDrawerOpen.value;
       },
 
       rightDrawerOpen,
       toggleRightDrawer() {
-        rightDrawerOpen.value = !rightDrawerOpen.value
+        rightDrawerOpen.value = !rightDrawerOpen.value;
       },
       width,
 
@@ -349,10 +312,10 @@ export default defineComponent({
 
       showRoller,
       showAbout,
-      btnSize
-    }
-  }
-})
+      btnSize,
+    };
+  },
+});
 </script>
 
 <style lang="sass">

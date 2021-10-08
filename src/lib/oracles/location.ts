@@ -422,7 +422,7 @@ export const Location: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Coastal Waters Location': {
+  CoastalWatersLocation: {
     name: 'Coastal Waters Location',
     d: 100,
     table: [
@@ -897,7 +897,7 @@ export const Location: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Settlement Name': {
+  SettlementName: {
     name: 'Settlement Name',
     d: 100,
     table: [
@@ -952,7 +952,7 @@ export const Location: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Quick Settlement Name Prefix': {
+  QuickSettlementNamePrefix: {
     name: 'Quick Settlement Name Prefix',
     d: 100,
     table: [
@@ -1133,7 +1133,7 @@ export const Location: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Quick Settlement Name Suffix': {
+  QuickSettlementNameSuffix: {
     name: 'Quick Settlement Name Suffix',
     d: 100,
     table: [

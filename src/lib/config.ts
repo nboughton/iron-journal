@@ -6,6 +6,7 @@ export function NewConfig (): IConfig {
     current: '',
     index: [],
     edit: true,
-    saving: false
+    saving: false,
+    map: 0
   }
 }

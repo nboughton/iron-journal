@@ -1,9 +1,10 @@
-import { IDenizens, ILocation, IMap, IMapCell, INPC, ISite } from 'src/components/models'
+import { ECellStatus, IDenizens, ILocation, IMap, IMapCell, INPC, ISite } from 'src/components/models'
 import { NewProgressTrack } from './tracks'
 
 export const NewNPC = (): INPC => {
   return {
-    name: 'New NPC',
+    name: '',
+    kin: '',
     role: '',
     goal: '',
     descriptor: '',
@@ -15,7 +16,7 @@ export const NewNPC = (): INPC => {
 
 export const NewLocation = (): ILocation => {
   return {
-    name: 'New Location',
+    name: '',
     region: '',
     type: '',
     descriptor: '',
@@ -26,7 +27,7 @@ export const NewLocation = (): ILocation => {
 
 export const NewSite = (): ISite => {
   return {
-    name: 'New Site',
+    name: '',
     objective: '',
     theme: '',
     domain: '',
@@ -39,18 +40,23 @@ export const NewSite = (): ISite => {
 export const NewCell = (): IMapCell => {
   return {
     name: '',
+    stat: ECellStatus.Empty,
     sites: [],
     locations: [],
     npcs: []
   }
 }
 
-export const NewMap = (image: string): IMap => {
+export const CellLabel = (c: IMapCell): string => {
+  return c.name
+}
+
+export const NewMap = (image: string, name?: string): IMap => {
   return {
-    name: '',
+    name: name ? name: '',
     image: image,
-    height: 400,
-    width: 400,
+    height: 825,
+    width: 1100,
     cells: {}
   }
 }

@@ -16,6 +16,7 @@ export interface IConfig {
   index: IIndexItem[];
   edit: boolean;
   saving: boolean;
+  map: number;
 }
 
 // Stats and Tracks
@@ -133,14 +134,23 @@ export interface IJournalEntry {
 export interface ILocation {
   name: string;
   region: string;
-  type: string; // Location
+  type: string; // Location table
   descriptor: string;
   trouble: string;
   notes: string;
 }
 
+export enum EKin {
+  Ironlander = 'Ironlander',
+  Elf = 'Elf',
+  Giant = 'Giant',
+  Varou = 'Varou',
+  Troll = 'Troll'
+}
+
 export interface INPC {
   name: string;
+  kin: string;
   role: string;
   goal: string;
   descriptor: string;
@@ -190,8 +200,15 @@ export interface ISite {
   denizens: IDenizens;
 }
 
+export enum ECellStatus {
+  Empty = 'empty',
+  Route = 'route',
+  Location = 'location',
+}
+
 export interface IMapCell {
   name: string
+  stat: ECellStatus
   sites: ISite[]
   locations: ILocation[]
   npcs: INPC[]

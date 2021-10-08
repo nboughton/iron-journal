@@ -121,15 +121,51 @@
 
     <!-- Stats -->
     <stats class="q-mt-md" v-model="campaign.data.character.stats" />
-    <q-input
-      class="q-mt-md q-mb-md"
-      v-model="campaign.data.character.gear"
-      label="Gear &amp; Notes"
-      autogrow
-      standout="bg-blue-grey text-white"
-      :input-style="{ color: '#ECEFF4' }"
-      dense
-    />
+    <i-input class="q-mt-md q-mb-md" label="Gear &amp; Notes" v-model="campaign.data.character.gear" autogrow />
+
+    <q-separator />
+
+    <!-- Assets -->
+    <div class="text-h4 sf-header text-center q-mt-md q-mb-sm" id="assets">
+      Assets<q-btn icon="add_circle" flat dense @click="showAssetSelect = true" />
+    </div>
+
+    <div class="row assets-container" v-if="$q.screen.gt.sm">
+      <div class="col left-assets q-mr-xs">
+        <div v-for="(a, i) in campaign.data.character.assets" :key="i">
+          <asset class="q-mb-sm" v-if="i % 2 == 0" v-model="campaign.data.character.assets[i]">
+            <template v-slot:append>
+              <q-btn icon="delete" flat dense @click="removeAsset(i)" v-if="config.data.edit">
+                <q-tooltip>Remove asset</q-tooltip>
+              </q-btn>
+            </template>
+          </asset>
+        </div>
+      </div>
+
+      <div class="col right-assets q-ml-xs">
+        <div v-for="(a, i) in campaign.data.character.assets" :key="i">
+          <asset class="q-mb-sm" v-if="i % 2 != 0" v-model="campaign.data.character.assets[i]">
+            <template v-slot:append>
+              <q-btn icon="delete" flat dense @click="removeAsset(i)" v-if="config.data.edit">
+                <q-tooltip>Remove asset</q-tooltip>
+              </q-btn>
+            </template>
+          </asset>
+        </div>
+      </div>
+    </div>
+    <div class="column assets-container" v-else>
+      <div v-for="(a, i) in campaign.data.character.assets" :key="i">
+        <asset class="q-mb-sm" v-model="campaign.data.character.assets[i]">
+          <template v-slot:append>
+            <q-btn icon="delete" flat dense @click="removeAsset(i)" v-if="config.data.edit">
+              <q-tooltip>Remove asset</q-tooltip>
+            </q-btn>
+          </template>
+        </asset>
+      </div>
+    </div>
 
     <q-separator />
 
@@ -175,50 +211,6 @@
         <q-btn class="col-shrink" icon="delete" flat dense @click="removeTrack(pIndex)" />
       </template>
     </progress-track>
-
-    <q-separator />
-
-    <!-- Assets -->
-    <div class="text-h4 sf-header text-center q-mt-md q-mb-sm" id="assets">
-      Assets<q-btn icon="add_circle" flat dense @click="showAssetSelect = true" />
-    </div>
-
-    <div class="row assets-container" v-if="$q.screen.gt.sm">
-      <div class="col left-assets q-mr-xs">
-        <div v-for="(a, i) in campaign.data.character.assets" :key="i">
-          <asset class="q-mb-sm" v-if="i % 2 == 0" v-model="campaign.data.character.assets[i]">
-            <template v-slot:append>
-              <q-btn icon="delete" flat dense @click="removeAsset(i)" v-if="config.data.edit">
-                <q-tooltip>Remove asset</q-tooltip>
-              </q-btn>
-            </template>
-          </asset>
-        </div>
-      </div>
-
-      <div class="col right-assets q-ml-xs">
-        <div v-for="(a, i) in campaign.data.character.assets" :key="i">
-          <asset class="q-mb-sm" v-if="i % 2 != 0" v-model="campaign.data.character.assets[i]">
-            <template v-slot:append>
-              <q-btn icon="delete" flat dense @click="removeAsset(i)" v-if="config.data.edit">
-                <q-tooltip>Remove asset</q-tooltip>
-              </q-btn>
-            </template>
-          </asset>
-        </div>
-      </div>
-    </div>
-    <div class="column assets-container" v-else>
-      <div v-for="(a, i) in campaign.data.character.assets" :key="i">
-        <asset class="q-mb-sm" v-model="campaign.data.character.assets[i]">
-          <template v-slot:append>
-            <q-btn icon="delete" flat dense @click="removeAsset(i)" v-if="config.data.edit">
-              <q-tooltip>Remove asset</q-tooltip>
-            </q-btn>
-          </template>
-        </asset>
-      </div>
-    </div>
 
     <q-separator />
 
@@ -287,10 +279,11 @@ import ProgressTrack from 'src/components/Tracks/ProgressTrack.vue';
 import Stats from 'src/components/Stats.vue';
 import Asset from 'src/components/Assets/Asset.vue';
 import Assets from 'src/components/Assets/Assets.vue';
+import IInput from 'src/components/IInput.vue';
 
 export default defineComponent({
   name: 'Character',
-  components: { ResourceTrack, Stats, ProgressTrack, Asset, Assets },
+  components: { ResourceTrack, Stats, ProgressTrack, Asset, Assets, IInput },
   setup() {
     const campaign = useCampaign();
 

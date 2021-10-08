@@ -21,6 +21,7 @@
       <q-tabs align="center" dense>
         <q-route-tab to="/truths" label="Truths" />
         <q-route-tab to="/" :label="campaign.data.character.name" />
+        <q-route-tab to="/world" label="World" />
       </q-tabs>
     </q-header>
 

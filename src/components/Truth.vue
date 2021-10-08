@@ -13,57 +13,66 @@
         label="Select one or write your own..."
       />
     </div>
-    <q-input v-model="data" autogrow dense standout="bg-blue-grey text-white" :input-style="{ color: '#ECEFF4' }" debounce="750" />
+    <i-input v-model="data" autogrow />
   </div>
 </template>
 
 <script lang="ts">
-import { ISelectOpt } from 'src/components/models'
-import { Truths } from 'src/lib/truths'
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue';
+
+import { ISelectOpt } from 'src/components/models';
+
+import { Truths } from 'src/lib/truths';
+
+import IInput from 'src/components/IInput.vue';
+
 export default defineComponent({
   name: 'Truths',
+  components: { IInput },
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
     id: {
       type: String,
-      required: true
+      required: true,
     },
     modelValue: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['update:modelValue'],
   setup(props, ctx) {
-    const data = ref(props.modelValue)
-    watch(() => props.modelValue,
+    const data = ref(props.modelValue);
+    watch(
+      () => props.modelValue,
       () => (data.value = props.modelValue)
-    )
-    watch(() => data.value,
+    );
+    watch(
+      () => data.value,
       () => ctx.emit('update:modelValue', data.value)
-    )
+    );
 
-    const select = ref('')
-    watch(() => select.value,
+    const select = ref('');
+    watch(
+      () => select.value,
       () => (data.value = select.value)
-    )
+    );
     const optsFn = (label: string): ISelectOpt[] => {
-      const out: ISelectOpt[] = []
-      Truths[label].forEach(t => {
-        out.push({ label: `${t.substring(0, 70)}...`, value: t })
-      })
-      return out
-    }
+      const out: ISelectOpt[] = [];
+      Truths[label].forEach((t) => {
+        out.push({ label: `${t.substring(0, 70)}...`, value: t });
+      });
+      return out;
+    };
 
     return {
       data,
       select,
-      optsFn
-    }
-  }
-})
+      optsFn,
+    };
+  },
+});
 </script>

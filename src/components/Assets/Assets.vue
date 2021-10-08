@@ -54,7 +54,7 @@
                   "
                 />
                 <div class="col-shrink text-bold">{{ ca.type }}</div>
-                <div class="col-shrink text-h6">; {{ ca.title }}</div>
+                <div class="col-shrink text-h6">{{ ca.title }}</div>
               </div>
 
               <div class="q-mb-sm" v-if="ca.subtitle" v-html="ca.subtitle" />

@@ -1,6 +1,6 @@
 <template>
   <div class="content-start items-start">
-    <q-expansion-item header-class="text-h5" label="Core">
+    <q-expansion-item header-class="text-h5" label="Core" default-opened>
       <q-expansion-item header-class="text-h6" label="Plot" :header-inset-level="0.5">
         <o-plot />
       </q-expansion-item>
@@ -45,8 +45,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { Threat } from 'src/lib/oracles/delve/threat';
-
 import ONPC from './ONPC.vue';
 import OPlot from './OPlot.vue';
 import OLocation from './OLocation.vue';
@@ -69,11 +67,6 @@ export default defineComponent({
     ODelveTrap,
     ODelveCombatEvent,
     ODelveThreat,
-  },
-  setup() {
-    return {
-      Threat,
-    };
   },
 });
 </script>

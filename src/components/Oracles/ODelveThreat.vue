@@ -8,7 +8,7 @@
     :key="index"
     :label="cat"
     v-model="data.results[cat]"
-    @click="data.results[cat] = oracleRoll(Threat[cat])"
+    @roll="data.results[cat] = oracleRoll(Threat[cat])"
   />
   <o-btns clear @clear="clear" />
 </template>

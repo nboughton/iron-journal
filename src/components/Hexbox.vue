@@ -1,6 +1,6 @@
 <template>
-  <div class="hexbox" @click="$emit('update:modelValue', !data)" :title="label">
-    <svg class="box" viewBox="0 0 26 26" width="28" height="28">
+  <div class="hexbox row items-center" @click="$emit('update:modelValue', !data)" :title="label">
+    <svg class="box" viewBox="0 0 26 26" width="25" height="22">
       <circle :class="{ hex: true, checked: data }" cx="13" cy="13" r="10" />
     </svg>
   </div>

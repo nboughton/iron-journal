@@ -1,5 +1,5 @@
-import { ECellStatus, IDenizens, ILocation, IMap, IMapCell, INPC, ISite } from 'src/components/models'
-import { NewProgressTrack } from './tracks'
+import { ECellStatus, IDenizens, ILocation, IMap, IMapCell, INPC, ISite } from 'src/components/models';
+import { NewProgressTrack } from './tracks';
 
 export const NewNPC = (): INPC => {
   return {
@@ -10,9 +10,9 @@ export const NewNPC = (): INPC => {
     descriptor: '',
     disposition: '',
     activity: '',
-    notes: ''
-  }
-}
+    notes: '',
+  };
+};
 
 export const NewLocation = (): ILocation => {
   return {
@@ -21,9 +21,9 @@ export const NewLocation = (): ILocation => {
     type: '',
     descriptor: '',
     trouble: '',
-    notes: ''
-  }
-}
+    notes: '',
+  };
+};
 
 export const NewSite = (): ISite => {
   return {
@@ -33,30 +33,32 @@ export const NewSite = (): ISite => {
     domain: '',
     track: NewProgressTrack(),
     notes: '',
-    denizens: <IDenizens>{}
-  }
-}
+    denizens: <IDenizens>{},
+  };
+};
 
-export const NewCell = (): IMapCell => {
+export const NewCell = (id: string, name?: string): IMapCell => {
   return {
-    name: '',
+    id: id,
+    name: name ? name : id,
     stat: ECellStatus.Empty,
     sites: [],
     locations: [],
-    npcs: []
-  }
-}
+    npcs: [],
+  };
+};
 
 export const CellLabel = (c: IMapCell): string => {
-  return c.name
-}
+  return c.name;
+};
 
 export const NewMap = (image: string, name?: string): IMap => {
   return {
-    name: name ? name: '',
+    name: name ? name : '',
     image: image,
-    height: 825,
-    width: 1100,
-    cells: {}
-  }
-}
+    height: 1100,
+    width: 825,
+    hexSize: 10,
+    cells: {},
+  };
+};

@@ -128,7 +128,7 @@ export interface ICharacter {
 export interface IJournalEntry {
   title: string;
   content: string;
-  pinned?: boolean
+  pinned?: boolean;
 }
 
 export interface ILocation {
@@ -145,7 +145,7 @@ export enum EKin {
   Elf = 'Elf',
   Giant = 'Giant',
   Varou = 'Varou',
-  Troll = 'Troll'
+  Troll = 'Troll',
 }
 
 export interface INPC {
@@ -200,26 +200,45 @@ export interface ISite {
   denizens: IDenizens;
 }
 
+// SearchResults as follows:
+// [sector][cell][objectType]number[] <- object indices
+export interface ISearchResults {
+  [index: number]: {
+    [index: string]: {
+      [index: string]: number[];
+    };
+  };
+}
+
 export enum ECellStatus {
   Empty = 'empty',
   Route = 'route',
   Location = 'location',
 }
 
+// Must correspond to the item section keys in IMapCell
+export enum EMapItems {
+  Sites = 'sites',
+  Locations = 'locations',
+  NPCs = 'npcs',
+}
+
 export interface IMapCell {
-  name: string
-  stat: ECellStatus
-  sites: ISite[]
-  locations: ILocation[]
-  npcs: INPC[]
+  id: string;
+  name: string;
+  stat: ECellStatus;
+  sites: ISite[];
+  locations: ILocation[];
+  npcs: INPC[];
 }
 
 export interface IMap {
-  name: string
+  name: string;
   image: string;
-  height: number
-  width: number
-  cells: { [index: string]: IMapCell }
+  height: number;
+  width: number;
+  hexSize: number;
+  cells: { [index: string]: IMapCell };
 }
 
 export interface ICampaign {
@@ -228,15 +247,15 @@ export interface ICampaign {
   character: ICharacter;
   progressTracks: IProgressTrack[];
   journal: IJournalEntry[];
-  maps: IMap[]
+  maps: IMap[];
   truths: ITruths;
 }
 
 // Moves
 export interface IMove {
   name: string;
-  source: string
-  text: string,
+  source: string;
+  text: string;
   keywords: string;
   oracles?: string[];
 }
@@ -256,21 +275,21 @@ export interface IOracle {
 // Rolls
 export interface IRollData {
   action: {
-    die: number,
-    score: number,
+    die: number;
+    score: number;
     color: string;
-  },
+  };
   challenge: {
     die1: {
       roll: number;
       color: string;
-    },
+    };
     die2: {
       roll: number;
       color: string;
-    },
-    match: boolean,
-  },
+    };
+    match: boolean;
+  };
   progress: boolean;
   result: string;
 }

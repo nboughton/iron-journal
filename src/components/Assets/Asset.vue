@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <div class="col-4 text-h6 q-mx-xs text-center">
+      <div class="col-4 text-h6 text-center">
         {{ data.title }}
         <slot name="append" v-if="config.data.edit" />
       </div>
@@ -42,10 +42,6 @@
             v-model="data.items[index].input.text"
           />
         </div>
-      </div>
-      <div class="row justify-evenly q-gutter-sm">
-        <q-checkbox v-if="data.cursed != undefined" label="Cursed" v-model="data.cursed" />
-        <q-checkbox v-if="data.battered != undefined" label="Battered" v-model="data.battered" />
       </div>
 
       <resource-track class="col-grow q-mt-xs" v-if="data.track" v-model="data.track" reverse variable />

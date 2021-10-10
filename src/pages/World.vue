@@ -14,10 +14,15 @@
         :input-style="{ color: '#ECEFF4' }"
         dense
       />
+      <div class="col-shrink">
+        <q-btn icon="mdi-magnify-minus" flat dense @click="zoom -= 0.5" />
+        {{ zoom }}
+        <q-btn icon="mdi-magnify-plus" flat dense @click="zoom += 0.5" />
+      </div>
     </div>
 
     <div class="row justify-center q-mb-md">
-      <hex-map />
+      <hex-map :zoom="zoom" :searchResults="results" />
     </div>
 
     <div class="row q-gutter-sm">
@@ -60,6 +65,7 @@ export default defineComponent({
     const searchText = ref('');
     const filters = ref([] as EMapItems[]);
     const showMapConfig = ref(false);
+    const zoom = ref(1);
 
     const mapOpts = computed((): ISelectOpt[] => {
       const out: ISelectOpt[] = [];
@@ -151,6 +157,7 @@ export default defineComponent({
       mapOpts,
       addMap,
       showMapConfig,
+      zoom,
 
       EMapItems,
       filters,

@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, PropType } from 'vue';
+import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
 
 import { ECellStatus, ISearchResults } from '../models';
 
@@ -34,6 +34,7 @@ import { useConfig } from 'src/store/config';
 import { Svg, SVG } from '@svgdotjs/svg.js';
 import { extendHex, defineGrid } from 'honeycomb-grid';
 import { NewCell } from 'src/lib/world';
+import { colours } from 'src/lib/colours';
 
 export default defineComponent({
   name: 'HexMap',
@@ -42,8 +43,12 @@ export default defineComponent({
       type: Object as PropType<ISearchResults>,
       default: <ISearchResults>{},
     },
+    zoom: {
+      type: Number,
+      default: 1,
+    },
   },
-  setup() {
+  setup(props) {
     const campaign = useCampaign();
     const config = useConfig();
     const showDialog = ref(false);
@@ -54,12 +59,18 @@ export default defineComponent({
       return `h-${x}-${y}`;
     };
 
+    const width = (): number => {
+      const w = campaign.data.maps[config.data.map].width; // Map width in px
+      const r = campaign.data.maps[config.data.map].hexSize; // hex radius
+      const hw = r * 2; // width of 1 hex
+
+      return Math.ceil(w / hw) + Math.floor(w % hw);
+    };
+
     const Hex = extendHex({ size: campaign.data.maps[config.data.map].hexSize });
     const Grid = defineGrid(Hex);
     const grid = Grid.rectangle({
-      width: Math.floor(
-        campaign.data.maps[config.data.map].width / (campaign.data.maps[config.data.map].hexSize * 1.5)
-      ),
+      width: width(),
       height: Math.floor(
         campaign.data.maps[config.data.map].height / (campaign.data.maps[config.data.map].hexSize * 1.5)
       ),
@@ -105,6 +116,28 @@ export default defineComponent({
 
       const bgk = SVG().image(campaign.data.maps[config.data.map].image);
       bgk.addTo(map).back();
+
+      renderFills();
+    };
+
+    const renderFills = () => {
+      const cells = campaign.data.maps[config.data.map].cells;
+      Object.keys(cells).forEach((id) => {
+        map.find(`.${id}`).forEach((cell) => {
+          const c = cells[id];
+          switch (c.stat) {
+            case ECellStatus.Location:
+              break;
+
+            case ECellStatus.Route:
+              cell.fill(colours.route);
+              break;
+
+            default:
+              break;
+          }
+        });
+      });
     };
 
     // PRIMARY CLICK EVENT
@@ -122,7 +155,7 @@ export default defineComponent({
         campaign.data.maps[config.data.map].cells[id].stat == ECellStatus.Empty
       ) {
         // Set hex fill here (rather than trigger a map re-render) for better mobile performance
-        map.find(`.${id}`).forEach((c) => c.fill('rgba(256,256,256, 0.4)'));
+        map.find(`.${id}`).forEach((c) => c.fill(colours.route));
 
         const c = NewCell(id);
         c.stat = ECellStatus.Route;
@@ -136,6 +169,15 @@ export default defineComponent({
       showDialog.value = true;
     };
 
+    watch(
+      () => props.zoom,
+      () =>
+        map.transform({
+          origin: [0, 0],
+          scale: props.zoom,
+        })
+    );
+
     return {
       campaign,
       config,
@@ -147,6 +189,9 @@ export default defineComponent({
 </script>
 
 <style lang="sass">
+.hexmap svg
+  transform-origin: 0 0
+
 svg polygon.hex
   stroke: rgba(256, 256, 256, 0.1)
   stroke-width: 1pt

@@ -13,7 +13,7 @@
           class="hexmap"
           ref="hexmap"
           :style="{
-            width: `${campaign.data.maps[config.data.map].width}px`,
+            minWidth: `${campaign.data.maps[config.data.map].width}px`,
             height: `${campaign.data.maps[config.data.map].height}px`,
           }"
           @click="click($event)"
@@ -21,31 +21,69 @@
       </q-page>
     </q-page-container>
   </q-layout>
+
+  <q-dialog v-model="showDialog" transition-show="fade" transition-hide="fade">
+    <q-card class="card-bg" style="min-width: 40%">
+      <q-card-section class="row justify-between items-center bg-secondary text-h5">
+        <q-input
+          class="col"
+          label="Cell Name"
+          v-model="campaign.data.maps[config.data.map].cells[selectedID].name"
+          dense
+          borderless
+        />
+        <q-btn class="col-shrink" icon="close" flat dense @click="showDialog = false" />
+      </q-card-section>
+
+      <q-card-section class="q-pa-sm q-mb-sm">
+        <div class="row q-gutter-sm items-center">
+          <q-select
+            class="col-grow"
+            label="Set cell status"
+            hint="Set to 'location' to save Oracle generated content and enable search for this cell"
+            v-model="campaign.data.maps[config.data.map].cells[selectedID].stat"
+            :options="Object.values(ECellStatus)"
+          />
+          <q-btn
+            class="col-shrink"
+            dense
+            outline
+            label="Go here"
+            @click="campaign.data.character.location = selectedID"
+          />
+        </div>
+      </q-card-section>
+
+      <q-card-section class="q-pa-sm">
+        <cell :sectorID="config.data.map" :cellID="selectedID" />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
 
-import { ECellStatus, ISearchResults } from '../models';
+import { ECellStatus, EMapItems, ISearchResults } from '../models';
 
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 
 import { Svg, SVG } from '@svgdotjs/svg.js';
-import { extendHex, defineGrid } from 'honeycomb-grid';
-import { NewCell } from 'src/lib/world';
+import { extendHex, defineGrid, HexFactory, Grid, Hex } from 'honeycomb-grid';
+import { CellLabel, NewCell } from 'src/lib/world';
 import { colours } from 'src/lib/colours';
+import { icon } from 'src/lib/icons';
+
+import Cell from './Cell.vue';
 
 export default defineComponent({
   name: 'HexMap',
+  components: { Cell },
   props: {
     searchResults: {
       type: Object as PropType<ISearchResults>,
       default: <ISearchResults>{},
-    },
-    zoom: {
-      type: Number,
-      default: 1,
     },
   },
   setup(props) {
@@ -67,24 +105,28 @@ export default defineComponent({
       return Math.ceil(w / hw) + Math.floor(w % hw);
     };
 
-    const Hex = extendHex({ size: campaign.data.maps[config.data.map].hexSize });
-    const Grid = defineGrid(Hex);
-    const grid = Grid.rectangle({
-      width: width(),
-      height: Math.floor(
+    const height = (): number => {
+      return Math.floor(
         campaign.data.maps[config.data.map].height / (campaign.data.maps[config.data.map].hexSize * 1.5)
-      ),
+      );
+    };
+
+    // Create initial values
+    let Hx: HexFactory<{ size: number }> = extendHex({ size: campaign.data.maps[config.data.map].hexSize });
+    let Grid = defineGrid(Hx);
+    let grid: Grid<Hex<{ size: number }>> = Grid.rectangle({
+      width: width(),
+      height: height(),
     });
-    const corners = Hex().corners();
-    const points = corners.map((p) => `${p.x},${p.y}`).join(' ');
 
     let map: Svg;
     onMounted(() => {
       map = SVG()
         .addTo(hexmap.value as unknown as HTMLElement)
         .size('100%', '100%');
+
       console.log('initial map render');
-      renderGrid();
+      fullRender();
     });
 
     // Render functions
@@ -101,9 +143,26 @@ export default defineComponent({
       return { x: 0, y: 0 };
     };
 
+    const fullRender = () => {
+      renderGrid();
+      renderFills();
+      renderIcons();
+      renderLabels();
+      renderSearch();
+    };
+
     const renderGrid = () => {
       console.log('Rendering map');
       map.clear();
+
+      Hx = extendHex({ size: campaign.data.maps[config.data.map].hexSize });
+      Grid = defineGrid(Hx);
+      grid = Grid.rectangle({
+        width: width(),
+        height: height(),
+      });
+      const corners = Hx().corners();
+      const points = corners.map((p) => `${p.x},${p.y}`).join(' ');
 
       // Place hexes and content
       grid.forEach((hex) => {
@@ -116,17 +175,17 @@ export default defineComponent({
 
       const bgk = SVG().image(campaign.data.maps[config.data.map].image);
       bgk.addTo(map).back();
-
-      renderFills();
     };
 
     const renderFills = () => {
+      console.log('Rendering fills');
       const cells = campaign.data.maps[config.data.map].cells;
       Object.keys(cells).forEach((id) => {
         map.find(`.${id}`).forEach((cell) => {
           const c = cells[id];
           switch (c.stat) {
             case ECellStatus.Location:
+              cell.fill(colours.location);
               break;
 
             case ECellStatus.Route:
@@ -134,10 +193,109 @@ export default defineComponent({
               break;
 
             default:
+              cell.fill('none');
               break;
           }
         });
       });
+    };
+
+    const renderLabels = () => {
+      console.log('Rendering labels');
+      map.find('.labels').forEach((i) => i.remove());
+
+      // Create a new group
+      const labels = SVG().group().addClass('labels');
+      const hexSize = campaign.data.maps[config.data.map].hexSize;
+
+      // Populate it
+      const cells = campaign.data.maps[config.data.map].cells;
+      Object.keys(cells).forEach((id) => {
+        const c = cells[id];
+
+        if (c.stat === ECellStatus.Location) {
+          const label = CellLabel(c);
+          const { x, y } = getXY(id);
+
+          SVG()
+            .text(label)
+            .addClass('label')
+            .addTo(labels)
+            .font({ fill: 'white', weight: 'bold', size: campaign.data.maps[config.data.map].fonts.label.size })
+            .stroke({ color: 'black', width: 1 })
+            .move(x - hexSize * 0.5, y - hexSize * 1);
+        }
+      });
+
+      labels.addTo(map).front();
+    };
+
+    const renderSearch = () => {
+      console.log('Rendering search results');
+      //clear existing search labels
+      map.find('.search-label').forEach((i) => i.remove());
+
+      if (!(props.searchResults != {} && props.searchResults[config.data.map])) return;
+
+      // Add search results
+      Object.keys(props.searchResults[config.data.map]).forEach((id) => {
+        if (props.searchResults[config.data.map][id]) {
+          const { x, y } = getXY(id);
+          const cell = props.searchResults[config.data.map][id];
+          const label = CellLabel(campaign.data.maps[config.data.map].cells[id]);
+
+          if (map.find(`.${id}`).length > 0) {
+            SVG()
+              .text(function (add) {
+                Object.keys(cell).forEach((oType) => {
+                  cell[oType].forEach((i) => {
+                    const c = campaign.data.maps[config.data.map].cells[id][oType as EMapItems][i];
+                    if (c && c.name !== label) {
+                      add.tspan(c.name).stroke({ color: 'black', width: 1 }).fill('white').newLine();
+                    }
+                  });
+                });
+              })
+              .addClass('search-label')
+              .addTo(map)
+              .move(x, y + campaign.data.maps[config.data.map].hexSize * 2)
+              .font({ size: campaign.data.maps[config.data.map].fonts.search.size, weight: 'bold' });
+          }
+        }
+      });
+    };
+
+    const renderIcons = () => {
+      console.log('Rendering icons');
+      map.find('.icons').forEach((i) => i.remove());
+
+      const icons = SVG().group().addClass('icons');
+      const cells = campaign.data.maps[config.data.map].cells;
+      Object.keys(cells).forEach((id) => {
+        const c = cells[id];
+
+        if (c.stat === ECellStatus.Location) {
+          const { x, y } = getXY(id);
+
+          const size = campaign.data.maps[config.data.map].hexSize;
+          let i = '';
+          if (c.npcs.length > 0) i = icon.person();
+          if (c.sites.length > 0) i = icon.dungeon();
+          if (c.locations.length > 0) i = icon.location(c.locations[0].type);
+
+          const img = SVG()
+            .image(i)
+            .addClass('icon')
+            .size(size, size)
+            .addTo(icons)
+            .move(x + size / 2.6, y + size / 2);
+
+          img.mouseenter(() => img.animate(100).transform({ scale: 1.3 }));
+          img.mouseleave(() => img.animate(100).transform({ scale: 1 }));
+        }
+      });
+
+      icons.addTo(map);
     };
 
     // PRIMARY CLICK EVENT
@@ -169,13 +327,51 @@ export default defineComponent({
       showDialog.value = true;
     };
 
+    // Zoom
     watch(
-      () => props.zoom,
+      () => campaign.data.maps[config.data.map].zoom,
       () =>
         map.transform({
           origin: [0, 0],
-          scale: props.zoom,
+          scale: campaign.data.maps[config.data.map].zoom,
         })
+    );
+
+    // Map config
+    watch(
+      () => [
+        campaign.data.maps[config.data.map].fonts,
+        campaign.data.maps[config.data.map].height,
+        campaign.data.maps[config.data.map].width,
+        campaign.data.maps[config.data.map].hexSize,
+      ],
+      () => {
+        console.log('Map config triggered render');
+        fullRender();
+      },
+      { deep: true }
+    );
+
+    // Cell data change
+    watch(
+      () => campaign.data.maps[config.data.map].cells,
+      () => {
+        console.log('Cell data triggered render');
+        renderFills();
+        renderIcons();
+        renderLabels();
+      },
+      { deep: true }
+    );
+
+    // Search
+    watch(
+      () => props.searchResults,
+      () => {
+        console.log('Search data triggered render');
+        renderSearch();
+      },
+      { deep: true }
     );
 
     return {
@@ -183,6 +379,9 @@ export default defineComponent({
       config,
       hexmap,
       click,
+      showDialog,
+      selectedID,
+      ECellStatus,
     };
   },
 });

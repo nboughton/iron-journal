@@ -7,6 +7,7 @@ import { NewMap } from './world';
 export function NewCharacter(): ICharacter {
   return {
     name: 'New Character',
+    location: '',
     xp: 0,
     stats: {
       edge: 0,

@@ -63,7 +63,7 @@ export default defineComponent({
       return opts;
     });
 
-    const cellSelect = ref(null);
+    const cellSelect = ref('');
     const cOpts = computed((): ISelectOpt[] => {
       let opts: ISelectOpt[] = [];
       Object.keys(campaign.data.maps[mapSelect.value].cells).forEach((c) => {

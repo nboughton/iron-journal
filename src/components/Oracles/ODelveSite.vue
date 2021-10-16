@@ -8,13 +8,15 @@
   <o-input label="Name" v-model="data.name" @roll="roll.Name" />
   <o-input label="Feature" v-model="data.feature" @roll="roll.Feature" />
   <o-input label="Danger" v-model="data.danger" @roll="roll.Danger" />
-  <o-btns clear initial save />
+  <o-btns clear @clear="btns.Clear" initial @initial="btns.Initial" save @save="btns.Save" />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 
 import { IOracle } from '../models';
+
+import { useCampaign } from 'src/store/campaign';
 
 import { SiteName } from 'src/lib/oracles/delve/site_name';
 import {
@@ -26,6 +28,7 @@ import {
 } from 'src/lib/oracles/delve/site_nature';
 import { oracleRoll } from 'src/lib/roll';
 import { oracleOpts } from 'src/lib/util';
+import { NewSite } from 'src/lib/world';
 
 import OInput from './OInput.vue';
 import OBtns from './OBtns.vue';
@@ -90,9 +93,34 @@ export default defineComponent({
       Danger: () => (data.value.danger = oracleRoll(dangers.value)),
     };
 
+    const btns = {
+      Clear: () => {
+        data.value = {
+          theme: '',
+          domain: '',
+          name: '',
+          feature: '',
+          danger: '',
+        };
+      },
+      Initial: () => {
+        btns.Clear();
+        roll.Theme();
+        roll.Domain();
+        roll.Name();
+      },
+      Save: (args: { map: number; cell: number }) => {
+        const s = NewSite();
+        s.name = data.value.name;
+        s.theme = data.value.theme;
+        s.domain = data.value.domain;
+        useCampaign().data.maps[args.map].cells[args.cell].sites.unshift(s);
+      },
+    };
     return {
       data,
       roll,
+      btns,
       oracleOpts,
       features,
       dangers,

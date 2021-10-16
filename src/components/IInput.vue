@@ -4,6 +4,7 @@
     v-model="data"
     :autogrow="autogrow"
     :clearable="clearable"
+    :square="square"
     dense
     standout="bg-blue-grey text-white"
     :input-style="{ color: '#ECEFF4' }"
@@ -16,40 +17,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, computed } from 'vue';
 export default defineComponent({
   name: 'IInput',
   props: {
     modelValue: {
-      type: String
+      type: String,
+      required: true,
     },
     autogrow: {
       type: Boolean,
-      default: false
     },
     clearable: {
       type: Boolean,
-      default: false
+    },
+    square: {
+      type: Boolean,
     },
     label: {
-      type: String
-    }
+      type: String,
+    },
   },
   emits: ['update:modelValue'],
-  setup(props, ctx) {
-    const data = ref(props.modelValue || '')
-    watch(
-      () => props.modelValue,
-      () => (data.value = props.modelValue as string)
-    )
-    watch(
-      () => data.value,
-      () => ctx.emit('update:modelValue', data.value)
-    )
+  setup(props, { emit }) {
+    const data = computed({
+      get: () => {
+        return props.modelValue;
+      },
+      set: (value: string) => emit('update:modelValue', value),
+    });
 
     return {
-      data
-    }
-  }
-})
+      data,
+    };
+  },
+});
 </script>

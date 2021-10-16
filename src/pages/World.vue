@@ -15,32 +15,147 @@
         dense
       />
       <div class="col-shrink">
-        <q-btn icon="mdi-magnify-minus" flat dense @click="zoom -= 0.5" />
-        {{ zoom }}
-        <q-btn icon="mdi-magnify-plus" flat dense @click="zoom += 0.5" />
+        <q-btn icon="mdi-magnify-minus" flat dense @click="campaign.data.maps[config.data.map].zoom -= 0.5" />
+        {{ campaign.data.maps[config.data.map].zoom }}
+        <q-btn icon="mdi-magnify-plus" flat dense @click="campaign.data.maps[config.data.map].zoom += 0.5" />
       </div>
     </div>
 
     <div class="row justify-center q-mb-md">
-      <hex-map :zoom="zoom" :searchResults="results" />
+      <hex-map :searchResults="results" />
     </div>
 
-    <div class="row q-gutter-sm">
-      <i-input class="col" label="Map Name" v-model="campaign.data.maps[config.data.map].name" />
-      <i-input class="col" label="Search" v-model="searchText" clearable />
-      <q-select
-        class="col"
-        label="Filters"
-        v-model="filters"
-        :options="Object.values(EMapItems)"
-        multiple
-        clearable
-        standout="bg-blue-grey text-white"
-        :input-style="{ color: '#ECEFF4' }"
-        dense
-      />
-      <q-btn class="col-shrink" flat dense icon="mdi-cog" @click="showMapConfig = true" />
+    <div v-if="$q.screen.gt.xs">
+      <div class="row q-gutter-sm">
+        <i-input class="col" label="Map Name" v-model="campaign.data.maps[config.data.map].name" />
+        <i-input class="col" label="Search" v-model="searchText" clearable />
+        <q-select
+          class="col"
+          label="Filters"
+          v-model="filters"
+          :options="Object.values(EMapItems)"
+          multiple
+          clearable
+          standout="bg-blue-grey text-white"
+          :input-style="{ color: '#ECEFF4' }"
+          dense
+        />
+        <q-btn class="col-shrink" flat dense icon="mdi-cog" @click="showMapConfig = true" />
+      </div>
     </div>
+    <div v-else>
+      <div class="row q-mb-sm">
+        <i-input class="col" label="Map Name" v-model="campaign.data.maps[config.data.map].name" />
+      </div>
+      <div class="row q-gutter-sm">
+        <i-input class="col" label="Search" v-model="searchText" clearable />
+        <q-select
+          class="col"
+          label="Filters"
+          v-model="filters"
+          :options="Object.values(EMapItems)"
+          multiple
+          clearable
+          standout="bg-blue-grey text-white"
+          :input-style="{ color: '#ECEFF4' }"
+          dense
+        />
+        <q-btn class="col-shrink" flat dense icon="mdi-cog" @click="showMapConfig = true" />
+      </div>
+    </div>
+
+    <!-- World data -->
+    <div class="column q-mt-md">
+      <div v-if="results != {}">
+        <q-expansion-item
+          class="q-mb-lg"
+          v-for="(map, mID) in results"
+          :key="mID"
+          default-opened
+          header-class="text-h4"
+          :label="`Map: ${campaign.data.maps[+mID].name}`"
+        >
+          <i-input class="q-mb-sm" label="Map Notes" v-model="campaign.data.maps[+mID].notes" autogrow />
+
+          <q-expansion-item
+            class="q-mb-md rounded-borders q-pa-none col-grow"
+            header-class="text-h6 card-bg"
+            flat
+            default-opened
+            v-for="(cell, cID) in map"
+            :key="cID"
+            :label="`Cell: ${CellLabel(campaign.data.maps[+mID].cells[cID])}`"
+          >
+            <div class="q-pt-xs" />
+            <q-card-section class="q-px-xs q-py-none" v-for="(itemIDs, oType) in cell" :key="oType">
+              <div v-for="oID in itemIDs" :key="oID">
+                <div v-if="oType === EMapItems.Locations">
+                  <w-location
+                    v-model="campaign.data.maps[+mID].cells[cID][oType][+oID]"
+                    @delete="campaign.removeObject(oType, +mID, cID, oID)"
+                  />
+                </div>
+
+                <div v-if="oType === EMapItems.Sites">
+                  <w-site
+                    v-model="campaign.data.maps[+mID].cells[cID][oType][+oID]"
+                    @delete="campaign.removeObject(oType, +mID, cID, oID)"
+                  />
+                </div>
+
+                <div v-if="oType === EMapItems.NPCs">
+                  <w-npc
+                    v-model="campaign.data.maps[+mID].cells[cID][oType][+oID]"
+                    @delete="campaign.removeObject(oType, +mID, cID, oID)"
+                  />
+                </div>
+              </div>
+            </q-card-section>
+          </q-expansion-item>
+        </q-expansion-item>
+      </div>
+    </div>
+
+    <q-dialog v-model="showMapConfig">
+      <q-card>
+        <q-card-section class="row card-bg items-center">
+          <div class="col-grow">Map Config</div>
+          <q-btn class="col-shrink" icon="close" flat dense @click="showMapConfig = false" />
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            label="Height in px"
+            type="number"
+            v-model.number="campaign.data.maps[config.data.map].height"
+            debounce="1000"
+          />
+          <q-input
+            label="Width in px"
+            type="number"
+            v-model.number="campaign.data.maps[config.data.map].width"
+            debounce="1000"
+          />
+          <q-input
+            label="Hex Radius"
+            type="number"
+            v-model.number="campaign.data.maps[config.data.map].hexSize"
+            debounce="1000"
+          />
+          <q-input
+            label="Location Label Size"
+            type="number"
+            v-model.number="campaign.data.maps[config.data.map].fonts.label.size"
+            debounce="1000"
+          />
+          <q-input
+            label="Search Label Size"
+            type="number"
+            v-model.number="campaign.data.maps[config.data.map].fonts.search.size"
+            debounce="1000"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -52,12 +167,17 @@ import { ISelectOpt, EMapItems, ISearchResults, ILocation, INPC, ISite } from 's
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 
+import { CellLabel } from 'src/lib/world';
+
 import HexMap from 'src/components/World/HexMap.vue';
 import IInput from 'src/components/IInput.vue';
+import WSite from 'src/components/World/WSite.vue';
+import WNpc from 'src/components/World/WNpc.vue';
+import WLocation from 'src/components/World/WLocation.vue';
 
 export default defineComponent({
   name: 'World',
-  components: { HexMap, IInput },
+  components: { HexMap, IInput, WSite, WNpc, WLocation },
   setup() {
     const campaign = useCampaign();
     const config = useConfig();
@@ -65,7 +185,6 @@ export default defineComponent({
     const searchText = ref('');
     const filters = ref([] as EMapItems[]);
     const showMapConfig = ref(false);
-    const zoom = ref(1);
 
     const mapOpts = computed((): ISelectOpt[] => {
       const out: ISelectOpt[] = [];
@@ -157,13 +276,13 @@ export default defineComponent({
       mapOpts,
       addMap,
       showMapConfig,
-      zoom,
 
       EMapItems,
       filters,
       searchText,
       results,
       show,
+      CellLabel,
     };
   },
 });

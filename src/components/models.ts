@@ -115,6 +115,7 @@ export interface IAsset {
 
 export interface ICharacter {
   name: string;
+  location: string;
   xp: number;
   stats: IStats;
   tracks: ITracks;
@@ -151,6 +152,7 @@ export enum EKin {
 export interface INPC {
   name: string;
   kin: string;
+  bond: boolean;
   role: string;
   goal: string;
   descriptor: string;
@@ -201,7 +203,7 @@ export interface ISite {
 }
 
 // SearchResults as follows:
-// [sector][cell][objectType]number[] <- object indices
+// [map: number][cell: string][objectType: string]number[] <- object indices
 export interface ISearchResults {
   [index: number]: {
     [index: string]: {
@@ -238,6 +240,16 @@ export interface IMap {
   height: number;
   width: number;
   hexSize: number;
+  zoom: number;
+  fonts: {
+    label: {
+      size: number;
+    };
+    search: {
+      size: number;
+    };
+  };
+  notes: string;
   cells: { [index: string]: IMapCell };
 }
 

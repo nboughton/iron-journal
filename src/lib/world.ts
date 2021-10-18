@@ -1,4 +1,4 @@
-import { ECellStatus, EKin, IDenizens, ILocation, IMap, IMapCell, INPC, ISite } from 'src/components/models';
+import { ECellStatus, EKin, EMapItems, IDenizens, ILocation, IMap, IMapCell, INPC, ISite } from 'src/components/models';
 import { NewProgressTrack } from './tracks';
 
 export const NewNPC = (kin?: string): INPC => {
@@ -50,17 +50,27 @@ export const NewCell = (id: string, name?: string): IMapCell => {
   };
 };
 
-export const CellLabel = (c: IMapCell): string => {
+export const CellLabel = (c: IMapCell) => {
   let label = c.name;
-  if (c.npcs.length > 0) label = c.npcs[0].name;
-  if (c.sites.length > 0) label = c.sites[0].name;
-  if (c.locations.length > 0) label = c.locations[0].name;
-  return label;
+  let type = EMapItems.Locations;
+  if (c.npcs.length > 0) {
+    label = c.npcs[0].name;
+    type = EMapItems.NPCs;
+  }
+  if (c.sites.length > 0) {
+    label = c.sites[0].name;
+    type = EMapItems.Sites;
+  }
+  if (c.locations.length > 0) {
+    label = c.locations[0].name;
+    type = EMapItems.Locations;
+  }
+  return { label, type };
 };
 
 export const NewMap = (image: string, name?: string): IMap => {
   return {
-    name: name ? name : '',
+    name: name ? name : 'New Map',
     image: image,
     height: 1100,
     width: 825,

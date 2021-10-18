@@ -2,7 +2,7 @@
   <div>
     <q-expansion-item
       :icon="`img:${icon.location(data.type)}`"
-      header-class="person-header sf-header rounded-borders q-mb-sm"
+      header-class="place-header sf-header rounded-borders q-mb-sm"
       :label="data.name"
       caption="Location"
     >
@@ -83,3 +83,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="sass">
+.place-header
+  background-color: $place
+  text-shadow: 1px 1px 1px $dark-page
+</style>

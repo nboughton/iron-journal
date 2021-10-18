@@ -2,11 +2,20 @@
   <q-page padding>
     <!-- content -->
     <div class="row items-center q-mb-md q-gutter-sm">
-      <q-btn class="col-shrink" flat dense icon="add_circle" @click="addMap" />
+      <q-btn
+        class="col-shrink"
+        flat
+        dense
+        icon="add_circle"
+        @click="
+          mapLoad = NewMapLoad();
+          mapLoad.show = true;
+        "
+      />
       <q-select
         class="col"
         label="Map"
-        v-model="campaign.data.maps[config.data.map].name"
+        v-model="config.data.map"
         :options="mapOpts"
         emit-value
         map-options
@@ -84,7 +93,7 @@
             default-opened
             v-for="(cell, cID) in map"
             :key="cID"
-            :label="`Cell: ${CellLabel(campaign.data.maps[+mID].cells[cID])}`"
+            :label="`Cell: ${CellLabel(campaign.data.maps[+mID].cells[cID]).label}`"
           >
             <div class="q-pt-xs" />
             <q-card-section class="q-px-xs q-py-none" v-for="(itemIDs, oType) in cell" :key="oType">
@@ -124,19 +133,19 @@
         </q-card-section>
         <q-card-section>
           <q-input
-            label="Height in px"
+            label="Height (px)"
             type="number"
             v-model.number="campaign.data.maps[config.data.map].height"
             debounce="1000"
           />
           <q-input
-            label="Width in px"
+            label="Width (px)"
             type="number"
             v-model.number="campaign.data.maps[config.data.map].width"
             debounce="1000"
           />
           <q-input
-            label="Hex Radius"
+            label="Hex Radius (px)"
             type="number"
             v-model.number="campaign.data.maps[config.data.map].hexSize"
             debounce="1000"
@@ -156,6 +165,25 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="mapLoad.show">
+      <q-card class="card-bg">
+        <q-card-section class="text-center text-bold bg-secondary">Add Map</q-card-section>
+
+        <q-card-section>
+          <q-input class="q-mb-sm" label="Name" v-model="mapLoad.name" dense />
+          <q-file class="q-mb-sm" v-model="mapLoad.image" dense label="Select Image" accept="image/*" />
+          <q-input class="q-mb-sm" label="Height (px)" type="number" v-model.number="mapLoad.height" dense />
+          <q-input class="q-mb-sm" label="Width (px)" type="number" v-model.number="mapLoad.width" dense />
+        </q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn label="Load" flat color="primary" @click="loadMap" />
+          <q-btn label="Save" flat color="primary" @click="saveMap" :disable="!mapLoad.loaded" />
+          <q-btn label="Close" flat color="warning" dense @click="mapLoad.show = false" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -167,7 +195,7 @@ import { ISelectOpt, EMapItems, ISearchResults, ILocation, INPC, ISite } from 's
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 
-import { CellLabel } from 'src/lib/world';
+import { CellLabel, NewMap } from 'src/lib/world';
 
 import HexMap from 'src/components/World/HexMap.vue';
 import IInput from 'src/components/IInput.vue';
@@ -181,6 +209,9 @@ export default defineComponent({
   setup() {
     const campaign = useCampaign();
     const config = useConfig();
+
+    // Go back to the default map if need be
+    if (!campaign.data.maps[config.data.map]) config.data.map = 0;
 
     const searchText = ref('');
     const filters = ref([] as EMapItems[]);
@@ -196,10 +227,6 @@ export default defineComponent({
       });
       return out;
     });
-
-    const addMap = () => {
-      // something happens here
-    };
 
     const applyFilters = computed((): boolean => {
       return filters.value != null && filters.value.length > 0;
@@ -270,12 +297,60 @@ export default defineComponent({
       },
     };
 
+    const NewMapLoad = () => {
+      return {
+        show: false,
+        image: null,
+        loaded: false,
+        name: '',
+        height: 0,
+        width: 0,
+      };
+    };
+
+    const mapLoad = ref(NewMapLoad());
+    let mapData = NewMap('');
+
+    const loadMap = () => {
+      // load and get h/w
+      const f: File = mapLoad.value.image as unknown as File;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const data = ev.target?.result as string;
+
+        const img = new Image();
+        img.src = data;
+        void img.decode().then(() => {
+          mapData = NewMap(data, mapLoad.value.name);
+          mapLoad.value.height = img.naturalHeight;
+          mapLoad.value.width = img.naturalWidth;
+          mapLoad.value.loaded = true;
+        });
+      };
+
+      reader.readAsDataURL(f);
+    };
+
+    const saveMap = () => {
+      // save it to the store
+      mapData.height = mapLoad.value.height;
+      mapData.width = mapLoad.value.width;
+      mapData.hexSize = 20;
+
+      campaign.data.maps.push(mapData);
+      mapLoad.value.show = false;
+    };
+
     return {
       campaign,
       config,
       mapOpts,
-      addMap,
+      NewMapLoad,
       showMapConfig,
+      mapLoad,
+      loadMap,
+      saveMap,
 
       EMapItems,
       filters,

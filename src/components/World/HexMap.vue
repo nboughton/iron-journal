@@ -114,10 +114,7 @@ export default defineComponent({
     // Create initial values
     let Hx: HexFactory<{ size: number }> = extendHex({ size: campaign.data.maps[config.data.map].hexSize });
     let Grid = defineGrid(Hx);
-    let grid: Grid<Hex<{ size: number }>> = Grid.rectangle({
-      width: width(),
-      height: height(),
-    });
+    let grid: Grid<Hex<{ size: number }>>;
 
     let map: Svg;
     onMounted(() => {
@@ -149,6 +146,10 @@ export default defineComponent({
       renderIcons();
       renderLabels();
       renderSearch();
+      map.transform({
+        origin: [0, 0],
+        scale: campaign.data.maps[config.data.map].zoom,
+      });
     };
 
     const renderGrid = () => {
@@ -214,14 +215,18 @@ export default defineComponent({
         const c = cells[id];
 
         if (c.stat === ECellStatus.Location) {
-          const label = CellLabel(c);
+          const { label, type } = CellLabel(c);
           const { x, y } = getXY(id);
 
           SVG()
             .text(label)
             .addClass('label')
             .addTo(labels)
-            .font({ fill: 'white', weight: 'bold', size: campaign.data.maps[config.data.map].fonts.label.size })
+            .font({
+              fill: colours[type] || 'white',
+              weight: 'bold',
+              size: campaign.data.maps[config.data.map].fonts.label.size,
+            })
             .stroke({ color: 'black', width: 1 })
             .move(x - hexSize * 0.5, y - hexSize * 1);
         }
@@ -242,7 +247,7 @@ export default defineComponent({
         if (props.searchResults[config.data.map][id]) {
           const { x, y } = getXY(id);
           const cell = props.searchResults[config.data.map][id];
-          const label = CellLabel(campaign.data.maps[config.data.map].cells[id]);
+          const { label } = CellLabel(campaign.data.maps[config.data.map].cells[id]);
 
           if (map.find(`.${id}`).length > 0) {
             SVG()
@@ -251,7 +256,7 @@ export default defineComponent({
                   cell[oType].forEach((i) => {
                     const c = campaign.data.maps[config.data.map].cells[id][oType as EMapItems][i];
                     if (c && c.name !== label) {
-                      add.tspan(c.name).stroke({ color: 'black', width: 1 }).fill('white').newLine();
+                      add.tspan(c.name).stroke({ color: 'black', width: 1 }).fill(colours[oType]).newLine();
                     }
                   });
                 });

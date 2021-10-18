@@ -96,6 +96,6 @@ export default defineComponent({
 
 <style lang="sass">
 .person-header
-  // background-color: $person
+  background-color: $npc
   text-shadow: 1px 1px 1px $dark-page
 </style>

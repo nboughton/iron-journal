@@ -1,7 +1,7 @@
 <template>
   <q-expansion-item
     :icon="`img:${icon.dungeon()}`"
-    header-class="rounded-borders q-mb-sm"
+    header-class="site-header rounded-borders q-mb-sm"
     :label="data.name"
     caption="Delve Site"
   >
@@ -118,3 +118,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="sass">
+.site-header
+  background-color: $site
+  text-shadow: 1px 1px 1px $dark-page
+</style>

@@ -5,30 +5,39 @@
     :label="data.name"
     caption="Delve Site"
   >
-    <div class="row">
-      <q-input class="col-grow" label="Name" dense v-model="data.name" debounce="750">
-        <template v-slot:append v-if="$q.screen.lt.sm">
-          <q-btn v-if="config.data.edit" class="col-shrink" icon="delete" dense flat @click="removeSite" />
-        </template>
-      </q-input>
-      <q-input class="col-grow" label="Objective" dense v-model="data.objective" debounce="750">
-        <template v-slot:append v-if="$q.screen.gt.xs">
-          <q-btn v-if="config.data.edit" class="col-shrink" icon="delete" dense flat @click="removeSite" />
-        </template>
-      </q-input>
+    <controls v-if="controls" @move="$emit('move', $event)" />
+    <div class="row q-gutter-sm q-mb-sm">
+      <i-input class="col-grow" label="Name" dense v-model="data.name" />
+      <q-btn
+        v-if="config.data.edit && $q.screen.lt.sm"
+        class="col-shrink"
+        icon="delete"
+        dense
+        flat
+        @click="removeSite"
+      />
+      <i-input class="col-grow" label="Objective" dense v-model="data.objective" />
+      <q-btn
+        v-if="config.data.edit && $q.screen.gt.xs"
+        class="col-shrink"
+        icon="delete"
+        dense
+        flat
+        @click="removeSite"
+      />
     </div>
 
-    <div class="row">
-      <q-input class="col-grow" label="Theme" dense v-model="data.theme" debounce="750" />
-      <q-input class="col-grow" label="Domain" dense v-model="data.domain" debounce="750" />
+    <div class="row q-gutter-sm q-mb-sm">
+      <i-input class="col-grow" label="Theme" dense v-model="data.theme" />
+      <i-input class="col-grow" label="Domain" dense v-model="data.domain" />
     </div>
 
-    <div class="row items-center justify-center q-pt-md">
+    <div class="row items-center justify-center q-mb-sm">
       <div class="col-12 text-center text-h5">Progress</div>
       <progress-track class="col-12" v-model="data.track" :showName="false" :showMenaceBtn="false" />
     </div>
 
-    <div class="text-center text-h5 q-pt-md">Denizens</div>
+    <div class="text-center text-h5">Denizens</div>
     <div class="row">
       <i-input class="col-xs-6 col-sm-3" label="01-27 Very Common" square v-model="data.denizens.veryCommon" />
       <i-input class="col-xs-6 col-sm-3" label="28-41 Common" square v-model="data.denizens.common1" />
@@ -68,7 +77,7 @@
       </div>
     </div>
 
-    <q-input class="row q-pt-md" label="Notes" dense v-model="data.notes" debounce="750" />
+    <i-input class="row q-pt-md q-mb-sm" label="Notes" dense v-model="data.notes" autogrow />
   </q-expansion-item>
 </template>
 
@@ -83,17 +92,21 @@ import { icon } from 'src/lib/icons';
 
 import ProgressTrack from 'src/components/Tracks/ProgressTrack.vue';
 import IInput from 'src/components/IInput.vue';
+import Controls from 'src/components/World/Controls.vue';
 
 export default defineComponent({
   name: 'WSite',
-  components: { ProgressTrack, IInput },
+  components: { ProgressTrack, IInput, Controls },
   props: {
     modelValue: {
       type: Object as PropType<ISite>,
       required: true,
     },
+    controls: {
+      type: Boolean,
+    },
   },
-  emits: ['update:modelValue', 'delete'],
+  emits: ['update:modelValue', 'delete', 'move'],
   setup(props, { emit }) {
     const data = ref(props.modelValue);
     watch(

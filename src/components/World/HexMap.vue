@@ -164,14 +164,13 @@ export default defineComponent({
       });
       const corners = Hx().corners();
       const points = corners.map((p) => `${p.x},${p.y}`).join(' ');
+      const hexSymbol = map.polygon(points).addClass('hex').fill('none');
 
       // Place hexes and content
       grid.forEach((hex) => {
         const { x, y } = hex.toPoint();
         const id = h(hex.x, hex.y);
-        const cell = map.polygon(points).addClass('hex').addClass(id);
-        cell.translate(x, y);
-        cell.fill('none');
+        hexSymbol.clone().addClass(id).addTo(map).translate(x, y);
       });
 
       const bgk = SVG().image(campaign.data.maps[config.data.map].image);
@@ -263,7 +262,7 @@ export default defineComponent({
               })
               .addClass('search-label')
               .addTo(map)
-              .move(x, y + campaign.data.maps[config.data.map].hexSize * 2)
+              .move(x, y + campaign.data.maps[config.data.map].hexSize * 1.5)
               .font({ size: campaign.data.maps[config.data.map].fonts.search.size, weight: 'bold' });
           }
         }

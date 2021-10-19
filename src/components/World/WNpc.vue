@@ -2,7 +2,7 @@
   <div>
     <q-expansion-item
       :icon="`img:${icon.person()}`"
-      header-class="person-header sf-header rounded-borders q-mb-sm"
+      header-class="person-header rounded-borders q-mb-sm"
       :label="data.name"
       caption="Person"
     >

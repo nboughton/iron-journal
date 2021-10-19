@@ -4,7 +4,7 @@
       :icon="`img:${icon.location(data.type)}`"
       header-class="place-header sf-header rounded-borders q-mb-sm"
       :label="data.name"
-      caption="Location"
+      :caption="`Location: ${data.type}`"
     >
       <controls v-if="controls" @move="$emit('move', $event)" />
 

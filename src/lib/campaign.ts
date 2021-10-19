@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { ICampaign, ICharacter, IJournalEntry } from 'src/components/models';
 import { v4 as uuid } from 'uuid';
+import { oracleRoll } from './roll';
 import { NewProgressTrack } from './tracks';
 import { NewMap } from './world';
+import { Names } from 'src/lib/oracles/names';
 
 export function NewCharacter(): ICharacter {
   return {
-    name: 'New Character',
+    name: oracleRoll(Names.Ironlander),
     location: '',
     xp: 0,
     stats: {

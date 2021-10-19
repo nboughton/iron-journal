@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 export const icon = {
+  d10: (): string => {
+    return require('../assets/icons/d10.svg') as string;
+  },
   person: (): string => {
     return require('../assets/icons/person.svg') as string;
   },
@@ -34,7 +37,7 @@ export const icon = {
       if (['Valley'].includes(match)) out = require('../assets/icons/valley.svg') as string;
       if (['Wall'].includes(match)) out = require('../assets/icons/stone-wall.svg') as string;
       if (['Lake', 'Pond'].includes(match)) out = require('../assets/icons/spill.svg') as string;
-      if (['Foothills', 'Hill'].includes(match)) out = require('../assets/icons/spill.svg') as string;
+      if (['Foothills', 'Hill'].includes(match)) out = require('../assets/icons/hills.svg') as string;
       if (['Fort'].includes(match)) out = require('../assets/icons/hill-fort.svg') as string;
       if (['Hovel'].includes(match)) out = require('../assets/icons/hut.svg') as string;
       if (['Camp'].includes(match)) out = require('../assets/icons/campfire.svg') as string;

@@ -95,6 +95,7 @@ import { useQuasar } from 'quasar';
 import { Difficulty, NewMenace } from 'src/lib/tracks';
 import { moveRoll, NewRollData } from 'src/lib/roll';
 import { sleep } from 'src/lib/util';
+import { useCampaign } from 'src/store/campaign';
 
 export default defineComponent({
   name: 'ProgressTrack',
@@ -129,6 +130,7 @@ export default defineComponent({
       { deep: true }
     );
 
+    const campaign = useCampaign();
     const updateValue = () => ctx.emit('update:modelValue', data.value);
 
     // Set difficulty externally
@@ -184,6 +186,10 @@ export default defineComponent({
           }
         }
         updateValue();
+        campaign.appendToJournal(
+          0,
+          `<div class="note progress"><b>[Mark Progress: ${data.value.name} :${actionScore.value} boxes]</b></div>`
+        );
       })();
     };
 
@@ -221,6 +227,11 @@ export default defineComponent({
     const rollData = ref(NewRollData());
     const conclude = () => {
       rollData.value = moveRoll(0, 0, 0, true, actionScore.value);
+
+      campaign.appendToJournal(
+        0,
+        `<div class="note progressroll"><b>[Progress Roll: ${data.value.name} :${rollData.value.result} = ${rollData.value.action.score} vs ${rollData.value.challenge.die1.roll} | ${rollData.value.challenge.die2.roll}]</b></div>`
+      );
     };
 
     return {

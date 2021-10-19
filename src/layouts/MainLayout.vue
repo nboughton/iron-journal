@@ -131,6 +131,15 @@
       </div>
 
       <journal />
+
+      <q-btn
+        class="journal-to-top"
+        fab
+        color="primary"
+        @click="scrollTo('rightDrawer')"
+        icon="mdi-arrow-up"
+        size="sm"
+      />
     </q-drawer>
 
     <q-page-container>
@@ -230,7 +239,7 @@ import { ref, defineComponent, computed } from 'vue';
 
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
-import { useQuasar } from 'quasar';
+import { scroll, useQuasar } from 'quasar';
 import { useAssets } from 'src/store/assets';
 
 import Journal from 'src/components/Journal/Journal.vue';
@@ -284,6 +293,17 @@ export default defineComponent({
     const showRoller = ref(false);
     const showAbout = ref(false);
 
+    const { getScrollTarget, setVerticalScrollPosition } = scroll;
+    const scrollTo = (id: string) => {
+      const el = document.getElementById(id);
+      if (el !== null) {
+        const target = getScrollTarget(el);
+        const offset = el.offsetTop;
+        const duration = 200;
+        setVerticalScrollPosition(target, offset, duration);
+      }
+    };
+
     return {
       leftDrawerOpen,
       toggleLeftDrawer() {
@@ -314,6 +334,8 @@ export default defineComponent({
       showRoller,
       showAbout,
       btnSize,
+
+      scrollTo,
     };
   },
 });
@@ -326,16 +348,8 @@ export default defineComponent({
 .about-text a:visited
     color: $primary
 
-.journal-img
-  max-width: 100%
-  max-height: 300px
-  margin: 5px
-
-.float-left
-  float: left
-  clear: right
-
-.float-right
-  float: right
-  clear: left
+.journal-to-top
+  position: fixed
+  bottom: 10px
+  right: 10px
 </style>

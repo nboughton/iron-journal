@@ -55,7 +55,7 @@
       </q-card-section>
 
       <q-card-section class="q-pa-sm">
-        <cell :sectorID="config.data.map" :cellID="selectedID" />
+        <cell :mapID="config.data.map" :cellID="selectedID" />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -102,11 +102,11 @@ export default defineComponent({
       const r = campaign.data.maps[config.data.map].hexSize; // hex radius
       const hw = r * 2; // width of 1 hex
 
-      return Math.ceil(w / hw) + Math.floor(w % hw);
+      return Math.ceil(w / hw) + Math.ceil(w % hw);
     };
 
     const height = (): number => {
-      return Math.floor(
+      return Math.ceil(
         campaign.data.maps[config.data.map].height / (campaign.data.maps[config.data.map].hexSize * 1.5)
       );
     };
@@ -228,7 +228,7 @@ export default defineComponent({
               size: campaign.data.maps[config.data.map].fonts.label.size,
             })
             .stroke({ color: 'black', width: 1 })
-            .move(x - hexSize * 0.5, y - hexSize * 1);
+            .move(x - hexSize * 0.5, y - hexSize);
         }
       });
 

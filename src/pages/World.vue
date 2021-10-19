@@ -23,6 +23,14 @@
         :input-style="{ color: '#ECEFF4' }"
         dense
       />
+      <q-btn
+        class="col-shrink"
+        flat
+        dense
+        icon="delete"
+        v-if="config.data.edit && campaign.data.maps.length > 1"
+        @click="removeMap"
+      />
       <div class="col-shrink">
         <q-btn icon="mdi-magnify-minus" flat dense @click="campaign.data.maps[config.data.map].zoom -= 0.5" />
         {{ campaign.data.maps[config.data.map].zoom }}
@@ -342,6 +350,12 @@ export default defineComponent({
       mapLoad.value.show = false;
     };
 
+    const removeMap = () => {
+      const index = config.data.map;
+      config.data.map = 0;
+      campaign.data.maps.splice(index, 1);
+    };
+
     return {
       campaign,
       config,
@@ -351,6 +365,7 @@ export default defineComponent({
       mapLoad,
       loadMap,
       saveMap,
+      removeMap,
 
       EMapItems,
       filters,

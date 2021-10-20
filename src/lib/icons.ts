@@ -3,6 +3,9 @@ export const icon = {
   d10: (): string => {
     return require('../assets/icons/d10.svg') as string;
   },
+  player: (): string => {
+    return require('../assets/icons/character.svg') as string
+  },
   person: (): string => {
     return require('../assets/icons/person.svg') as string;
   },

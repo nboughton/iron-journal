@@ -3,13 +3,16 @@
     view="hHh lpR fFf"
     container
     :style="{
-      width: '800px',
+      width: `${campaign.data.maps[config.data.map].width + 20}px`,
       height: '600px',
     }"
   >
     <q-page-container>
       <q-page>
+        <div v-if="gridLoading" class="text-h5">Rendering map, please wait</div>
+        <q-linear-progress v-if="gridLoading" :value="Math.floor(hexes / curHex)" />
         <div
+          v-show="!gridLoading"
           class="hexmap"
           ref="hexmap"
           :style="{
@@ -121,10 +124,24 @@ export default defineComponent({
       map = SVG()
         .addTo(hexmap.value as unknown as HTMLElement)
         .size('100%', '100%');
-
-      console.log('initial map render');
       fullRender();
+      console.log('initial map render');
     });
+
+    const fullRender = () => {
+      void renderGrid().then(() => {
+        renderFills();
+        renderIcons();
+        renderLabels();
+        renderSearch();
+        renderPlayer();
+        map.transform({
+          origin: [0, 0],
+          scale: campaign.data.maps[config.data.map].zoom,
+        });
+        gridLoading.value = false;
+      });
+    };
 
     // Render functions
     const getXY = (id: string): { x: number; y: number } => {
@@ -140,19 +157,12 @@ export default defineComponent({
       return { x: 0, y: 0 };
     };
 
-    const fullRender = () => {
-      renderGrid();
-      renderFills();
-      renderIcons();
-      renderLabels();
-      renderSearch();
-      map.transform({
-        origin: [0, 0],
-        scale: campaign.data.maps[config.data.map].zoom,
-      });
-    };
-
-    const renderGrid = () => {
+    const gridLoading = ref(true);
+    const curHex = ref(0);
+    const hexes = ref(0);
+    // eslint-disable-next-line @typescript-eslint/require-await
+    const renderGrid = async () => {
+      gridLoading.value = true;
       console.log('Rendering map');
       map.clear();
 
@@ -166,8 +176,10 @@ export default defineComponent({
       const points = corners.map((p) => `${p.x},${p.y}`).join(' ');
       const hexSymbol = map.polygon(points).addClass('hex').fill('none');
 
+      hexes.value = width() * height();
       // Place hexes and content
-      grid.forEach((hex) => {
+      grid.forEach((hex, i) => {
+        curHex.value = i;
         const { x, y } = hex.toPoint();
         const id = h(hex.x, hex.y);
         hexSymbol.clone().addClass(id).addTo(map).translate(x, y);
@@ -302,6 +314,26 @@ export default defineComponent({
       icons.addTo(map);
     };
 
+    const renderPlayer = () => {
+      console.log('Render player icon');
+
+      const location = campaign.data.character.location;
+      if (!location) return;
+
+      map.find('.player').forEach((p) => p.remove());
+
+      const size = campaign.data.maps[config.data.map].hexSize;
+      const { x, y } = getXY(location);
+
+      SVG()
+        .image(icon.player())
+        .addClass('player')
+        .size(size, size)
+        .addTo(map)
+        .move(x + size, y)
+        .front();
+    };
+
     // PRIMARY CLICK EVENT
     const click = (ev: { offsetX: number; offsetY: number }) => {
       // Get the SVG hex that was clicked on
@@ -344,7 +376,6 @@ export default defineComponent({
     // Map config
     watch(
       () => [
-        campaign.data.maps[config.data.map].fonts,
         campaign.data.maps[config.data.map].height,
         campaign.data.maps[config.data.map].width,
         campaign.data.maps[config.data.map].hexSize,
@@ -352,6 +383,15 @@ export default defineComponent({
       () => {
         console.log('Map config triggered render');
         fullRender();
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => campaign.data.maps[config.data.map].fonts,
+      () => {
+        renderLabels();
+        renderSearch();
       },
       { deep: true }
     );
@@ -378,9 +418,18 @@ export default defineComponent({
       { deep: true }
     );
 
+    // Move Player
+    watch(
+      () => campaign.data.character.location,
+      () => renderPlayer()
+    );
+
     return {
       campaign,
       config,
+      gridLoading,
+      hexes,
+      curHex,
       hexmap,
       click,
       showDialog,
@@ -394,6 +443,7 @@ export default defineComponent({
 <style lang="sass">
 .hexmap svg
   transform-origin: 0 0
+  cursor: pointer
 
 svg polygon.hex
   stroke: rgba(256, 256, 256, 0.1)

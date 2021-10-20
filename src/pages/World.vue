@@ -57,7 +57,7 @@
           :input-style="{ color: '#ECEFF4' }"
           dense
         />
-        <q-btn class="col-shrink" flat dense icon="mdi-cog" @click="showMapConfig = true" />
+        <q-btn class="col-shrink" flat dense icon="mdi-cog" @click="openMapConfig" />
       </div>
     </div>
     <div v-else>
@@ -77,7 +77,7 @@
           :input-style="{ color: '#ECEFF4' }"
           dense
         />
-        <q-btn class="col-shrink" flat dense icon="mdi-cog" @click="showMapConfig = true" />
+        <q-btn class="col-shrink" flat dense icon="mdi-cog" @click="openMapConfig" />
       </div>
     </div>
 
@@ -140,37 +140,15 @@
           <q-btn class="col-shrink" icon="close" flat dense @click="showMapConfig = false" />
         </q-card-section>
         <q-card-section>
-          <q-input
-            label="Height (px)"
-            type="number"
-            v-model.number="campaign.data.maps[config.data.map].height"
-            debounce="1000"
-          />
-          <q-input
-            label="Width (px)"
-            type="number"
-            v-model.number="campaign.data.maps[config.data.map].width"
-            debounce="1000"
-          />
-          <q-input
-            label="Hex Radius (px)"
-            type="number"
-            v-model.number="campaign.data.maps[config.data.map].hexSize"
-            debounce="1000"
-          />
-          <q-input
-            label="Location Label Size"
-            type="number"
-            v-model.number="campaign.data.maps[config.data.map].fonts.label.size"
-            debounce="1000"
-          />
-          <q-input
-            label="Search Label Size"
-            type="number"
-            v-model.number="campaign.data.maps[config.data.map].fonts.search.size"
-            debounce="1000"
-          />
+          <q-input label="Height (px)" type="number" v-model.number="mapConfig.height" />
+          <q-input label="Width (px)" type="number" v-model.number="mapConfig.width" />
+          <q-input label="Hex Radius (px)" type="number" v-model.number="mapConfig.hex" />
+          <q-input label="Location Label Size" type="number" v-model.number="mapConfig.locLabel" />
+          <q-input label="Search Label Size" type="number" v-model.number="mapConfig.srcLabel" />
         </q-card-section>
+        <q-card-actions align="right">
+          <q-btn color="primary" flat label="Save" @click="saveMapConfig" />
+        </q-card-actions>
       </q-card>
     </q-dialog>
 
@@ -356,12 +334,41 @@ export default defineComponent({
       campaign.data.maps.splice(index, 1);
     };
 
+    const mapConfig = ref({
+      height: 0,
+      width: 0,
+      hex: 0,
+      locLabel: 0,
+      srcLabel: 0,
+    });
+    const openMapConfig = () => {
+      mapConfig.value.height = campaign.data.maps[config.data.map].height;
+      mapConfig.value.width = campaign.data.maps[config.data.map].width;
+      mapConfig.value.hex = campaign.data.maps[config.data.map].hexSize;
+      mapConfig.value.locLabel = campaign.data.maps[config.data.map].fonts.label.size;
+      mapConfig.value.srcLabel = campaign.data.maps[config.data.map].fonts.search.size;
+      showMapConfig.value = true;
+    };
+    const saveMapConfig = () => {
+      // do major values in one go
+      Object.assign(campaign.data.maps[config.data.map], {
+        height: mapConfig.value.height,
+        width: mapConfig.value.width,
+        hexSize: mapConfig.value.hex,
+      });
+      campaign.data.maps[config.data.map].fonts.label.size = mapConfig.value.locLabel;
+      campaign.data.maps[config.data.map].fonts.search.size = mapConfig.value.srcLabel;
+    };
+
     return {
       campaign,
       config,
       mapOpts,
       NewMapLoad,
       showMapConfig,
+      openMapConfig,
+      saveMapConfig,
+      mapConfig,
       mapLoad,
       loadMap,
       saveMap,

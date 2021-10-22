@@ -4,22 +4,28 @@
       <q-toolbar>
         <q-btn dense flat icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-          <q-input input-class="text-h5" v-model="campaign.data.name" borderless />
+        <q-toolbar-title class="text-h6 norse">
+          IRON JOURNAL <span class="title-pipe">|</span> IRONSWORN
+          <!--q-input input-class="text-h5" v-model="campaign.data.name" borderless /-->
         </q-toolbar-title>
 
         <q-btn v-if="config.data.saving" icon="save" flat dense disable />
+
         <q-btn icon="mdi-dice-6" flat dense @click="showRoller = !showRoller">
           <q-tooltip>Toggle Dice Roller</q-tooltip>
         </q-btn>
+
         <q-toggle icon="delete" v-model="config.data.edit">
           <q-tooltip>Toggle Delete buttons</q-tooltip>
         </q-toggle>
-        <q-btn dense flat icon="edit_note" @click="toggleRightDrawer" />
+
+        <q-btn dense flat icon="edit_note" @click="toggleRightDrawer">
+          <q-tooltip>Toggle right drawer for Oracles, Moves and Journal</q-tooltip>
+        </q-btn>
       </q-toolbar>
 
       <q-tabs align="center" dense>
-        <q-route-tab to="/truths" label="Truths" />
+        <q-route-tab to="/truths" label="Campaign" />
         <q-route-tab to="/" :label="campaign.data.character.name" />
         <q-route-tab to="/world" label="World" />
       </q-tabs>
@@ -110,7 +116,7 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" :width="width" bordered>
+    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" :width="width" bordered id="rightDrawer">
       <!-- right drawer content -->
       <div class="row">
         <q-expansion-item class="col-12">
@@ -352,4 +358,12 @@ export default defineComponent({
   position: fixed
   bottom: 10px
   right: 10px
+
+.title-pipe
+  margin: 0
+  padding: 0
+  margin-left: 10px
+  margin-right: 10px
+  text-shadow: 1px 1px 1px $dark
+  color: darkgrey
 </style>

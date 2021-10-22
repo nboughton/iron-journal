@@ -1,6 +1,8 @@
 <template>
   <q-page padding>
     <!-- content -->
+    <i-input class="q-mb-md" label="Campaign Name" v-model="campaign.data.name" />
+    <div class="row q-mb-md text-h4">Truths</div>
     <truth v-model="campaign.data.truths.theOldWorld" label="The Old World" id="theOldWorld" />
     <truth v-model="campaign.data.truths.iron" label="Iron" id="iron" />
     <truth v-model="campaign.data.truths.legacies" label="Legacies" id="legacies" />
@@ -16,18 +18,22 @@
 </template>
 
 <script lang="ts">
-import { useCampaign } from 'src/store/campaign'
-import { defineComponent } from 'vue'
-import Truth from 'src/components/Truth.vue'
+import { defineComponent } from 'vue';
+
+import { useCampaign } from 'src/store/campaign';
+
+import Truth from 'src/components/Truth.vue';
+import IInput from 'src/components/IInput.vue';
+
 export default defineComponent({
   name: 'Truths',
-  components: { Truth },
+  components: { Truth, IInput },
   setup() {
-    const campaign = useCampaign()
+    const campaign = useCampaign();
 
     return {
-      campaign
-    }
-  }
-})
+      campaign,
+    };
+  },
+});
 </script>

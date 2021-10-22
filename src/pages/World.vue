@@ -32,13 +32,19 @@
         @click="removeMap"
       />
       <div class="col-shrink">
-        <q-btn icon="mdi-magnify-minus" flat dense @click="campaign.data.maps[config.data.map].zoom -= 0.5" />
+        <q-btn
+          icon="mdi-magnify-minus"
+          flat
+          dense
+          @click="if (campaign.data.maps[config.data.map].zoom > 1) campaign.data.maps[config.data.map].zoom -= 0.5;"
+        />
         {{ campaign.data.maps[config.data.map].zoom }}
         <q-btn icon="mdi-magnify-plus" flat dense @click="campaign.data.maps[config.data.map].zoom += 0.5" />
       </div>
     </div>
 
     <div class="row justify-center q-mb-md">
+      <q-btn size="xl" loading flat dense v-if="config.data.mapLoading" />
       <hex-map :searchResults="results" />
     </div>
 
@@ -101,7 +107,7 @@
             default-opened
             v-for="(cell, cID) in map"
             :key="cID"
-            :label="`Cell: ${CellLabel(campaign.data.maps[+mID].cells[cID]).label}`"
+            :label="`Cell: ${CellLabel(campaign.data.maps[+mID].cells[cID], cID).label}`"
           >
             <div class="q-pt-xs" />
             <q-card-section class="q-px-xs q-py-none" v-for="(itemIDs, oType) in cell" :key="oType">
@@ -142,12 +148,12 @@
         <q-card-section>
           <q-input label="Height (px)" type="number" v-model.number="mapConfig.height" />
           <q-input label="Width (px)" type="number" v-model.number="mapConfig.width" />
-          <q-input label="Hex Radius (px)" type="number" v-model.number="mapConfig.hex" />
+          <q-input label="Hex Radius (px)" type="number" v-model.number="mapConfig.hex" :min="10" />
           <q-input label="Location Label Size" type="number" v-model.number="mapConfig.locLabel" />
           <q-input label="Search Label Size" type="number" v-model.number="mapConfig.srcLabel" />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn color="primary" flat label="Save" @click="saveMapConfig" />
+          <q-btn color="primary" flat label="Save" @click="saveMapConfig" :loading="config.data.mapLoading" />
         </q-card-actions>
       </q-card>
     </q-dialog>

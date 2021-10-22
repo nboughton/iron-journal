@@ -1,6 +1,9 @@
 <template>
   <o-input label="Region" v-model="data.region" @roll="roll.Region" />
-  <o-input label="Location" v-model="data.type" @roll="roll.Location" />
+  <div class="row items-center">
+    <q-select class="col-grow" label="Location" v-model="data.type" :options="locationOpts" dense />
+    <q-btn class="col-shrink" flat dense icon="mdi-dice-6" @click="roll.Location" />
+  </div>
   <o-input label="Name" v-model="data.name" @roll="roll.Name" />
   <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" />
   <o-input label="Trouble" v-model="data.trouble" @roll="roll.Trouble" />
@@ -22,6 +25,7 @@ import { NewLocation } from 'src/lib/world';
 
 import OInput from './OInput.vue';
 import OBtns from './OBtns.vue';
+import { oracleOpts } from 'src/lib/util';
 
 export default defineComponent({
   name: 'OLocation',
@@ -61,11 +65,15 @@ export default defineComponent({
         useCampaign().data.maps[args.map].cells[args.cell].locations.unshift(storeCopy);
       },
     };
+    const locationOpts = /(coast|island)/i.test(data.value.region)
+      ? oracleOpts(Location.CoastalWatersLocation)
+      : oracleOpts(Location.Location);
 
     return {
       data,
       btns,
       roll,
+      locationOpts,
     };
   },
 });

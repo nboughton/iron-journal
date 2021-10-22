@@ -10,7 +10,15 @@
 
       <div class="row q-gutter-sm q-mb-sm no-wrap" v-if="$q.screen.gt.xs">
         <i-input class="col" label="Name" v-model="data.name" />
-        <i-input class="col" label="Type" v-model="data.type" />
+        <q-select
+          class="col"
+          label="Type"
+          v-model="data.type"
+          :options="locationOpts"
+          standout="bg-blue-grey text-white"
+          :input-style="{ color: '#ECEFF4' }"
+          dense
+        />
         <i-input class="col" label="Region" v-model="data.region" />
         <q-btn v-if="config.data.edit" icon="delete" flat dense @click="$emit('delete')" />
       </div>
@@ -41,11 +49,14 @@ import { defineComponent, PropType, ref, watch } from 'vue';
 
 import { ILocation } from '../models';
 
+import { useConfig } from 'src/store/config';
+
 import { icon } from 'src/lib/icons';
+import { oracleOpts } from 'src/lib/util';
+import { Location } from 'src/lib/oracles/location';
 
 import IInput from 'src/components/IInput.vue';
 import Controls from 'src/components/World/Controls.vue';
-import { useConfig } from 'src/store/config';
 
 export default defineComponent({
   name: 'WLocation',
@@ -74,11 +85,15 @@ export default defineComponent({
     );
 
     const config = useConfig();
+    const locationOpts = /(coast|island)/i.test(data.value.region)
+      ? oracleOpts(Location.CoastalWatersLocation)
+      : oracleOpts(Location.Location);
 
     return {
       data,
       icon,
       config,
+      locationOpts,
     };
   },
 });

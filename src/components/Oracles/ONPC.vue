@@ -1,7 +1,7 @@
 <template>
   <q-select label="Kin" v-model="data.kin" :options="Object.values(EKin)" dense />
   <o-input label="Name" v-model="data.name" @roll="roll.Name" />
-  <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" />
+  <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" reroll :maxRerolls="3" />
   <o-input label="Disposition" v-model="data.disposition" @roll="roll.Disp" />
   <o-input label="Role" v-model="data.role" @roll="roll.Role" />
   <o-input label="Goal" v-model="data.goal" @roll="roll.Goal" />
@@ -39,7 +39,8 @@ export default defineComponent({
         }
       },
       Desc: () => {
-        data.value.descriptor = oracleRoll(Character.Descriptor);
+        const d = oracleRoll(Character.Descriptor);
+        data.value.descriptor = data.value.descriptor ? (data.value.descriptor += ', ' + d) : d;
       },
       Disp: () => {
         data.value.disposition = oracleRoll(Character.Disposition);

@@ -50,7 +50,7 @@ export const NewCell = (id: string, name?: string): IMapCell => {
   };
 };
 
-export const CellLabel = (c: IMapCell) => {
+export const CellLabel = (c: IMapCell, id: string) => {
   let label = c.name;
   let type = EMapItems.Locations;
   if (c.npcs.length > 0) {
@@ -65,6 +65,8 @@ export const CellLabel = (c: IMapCell) => {
     label = c.locations[0].name;
     type = EMapItems.Locations;
   }
+
+  if (c.name !== id) label = c.name;
   return { label, type };
 };
 

@@ -9,10 +9,7 @@
   >
     <q-page-container>
       <q-page>
-        <div v-if="gridLoading" class="text-h5">Rendering map, please wait</div>
-        <q-linear-progress v-if="gridLoading" :value="Math.floor(hexes / curHex)" />
         <div
-          v-show="!gridLoading"
           class="hexmap"
           ref="hexmap"
           :style="{
@@ -52,7 +49,7 @@
             dense
             outline
             label="Go here"
-            @click="campaign.data.character.location = selectedID"
+            @click="campaign.data.maps[config.data.map].player = selectedID"
           />
         </div>
       </q-card-section>
@@ -65,6 +62,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/require-await */
 import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
 
 import { ECellStatus, EMapItems, ISearchResults } from '../models';
@@ -121,11 +119,11 @@ export default defineComponent({
 
     let map: Svg;
     onMounted(() => {
+      console.log('initial map render');
       map = SVG()
         .addTo(hexmap.value as unknown as HTMLElement)
         .size('100%', '100%');
       fullRender();
-      console.log('initial map render');
     });
 
     const fullRender = () => {
@@ -139,7 +137,6 @@ export default defineComponent({
           origin: [0, 0],
           scale: campaign.data.maps[config.data.map].zoom,
         });
-        gridLoading.value = false;
       });
     };
 
@@ -157,12 +154,7 @@ export default defineComponent({
       return { x: 0, y: 0 };
     };
 
-    const gridLoading = ref(true);
-    const curHex = ref(0);
-    const hexes = ref(0);
-    // eslint-disable-next-line @typescript-eslint/require-await
     const renderGrid = async () => {
-      gridLoading.value = true;
       console.log('Rendering map');
       map.clear();
 
@@ -176,10 +168,8 @@ export default defineComponent({
       const points = corners.map((p) => `${p.x},${p.y}`).join(' ');
       const hexSymbol = map.polygon(points).addClass('hex').fill('none');
 
-      hexes.value = width() * height();
       // Place hexes and content
-      grid.forEach((hex, i) => {
-        curHex.value = i;
+      grid.forEach((hex) => {
         const { x, y } = hex.toPoint();
         const id = h(hex.x, hex.y);
         hexSymbol.clone().addClass(id).addTo(map).translate(x, y);
@@ -226,7 +216,7 @@ export default defineComponent({
         const c = cells[id];
 
         if (c.stat === ECellStatus.Location) {
-          const { label, type } = CellLabel(c);
+          let { label, type } = CellLabel(c, id);
           const { x, y } = getXY(id);
 
           SVG()
@@ -258,7 +248,7 @@ export default defineComponent({
         if (props.searchResults[config.data.map][id]) {
           const { x, y } = getXY(id);
           const cell = props.searchResults[config.data.map][id];
-          const { label } = CellLabel(campaign.data.maps[config.data.map].cells[id]);
+          let { label } = CellLabel(campaign.data.maps[config.data.map].cells[id], id);
 
           if (map.find(`.${id}`).length > 0) {
             SVG()
@@ -274,7 +264,7 @@ export default defineComponent({
               })
               .addClass('search-label')
               .addTo(map)
-              .move(x, y + campaign.data.maps[config.data.map].hexSize * 1.5)
+              .move(x, y + campaign.data.maps[config.data.map].hexSize * 2.5)
               .font({ size: campaign.data.maps[config.data.map].fonts.search.size, weight: 'bold' });
           }
         }
@@ -317,8 +307,8 @@ export default defineComponent({
     const renderPlayer = () => {
       console.log('Render player icon');
 
-      const location = campaign.data.character.location;
-      if (!location) return;
+      if (!campaign.data.maps[config.data.map].player) return;
+      const location = campaign.data.maps[config.data.map].player as string;
 
       map.find('.player').forEach((p) => p.remove());
 
@@ -382,6 +372,7 @@ export default defineComponent({
       ],
       () => {
         console.log('Map config triggered render');
+        config.data.mapLoading = true;
         fullRender();
       },
       { deep: true }
@@ -420,16 +411,13 @@ export default defineComponent({
 
     // Move Player
     watch(
-      () => campaign.data.character.location,
+      () => campaign.data.maps[config.data.map].player,
       () => renderPlayer()
     );
 
     return {
       campaign,
       config,
-      gridLoading,
-      hexes,
-      curHex,
       hexmap,
       click,
       showDialog,

@@ -17,6 +17,7 @@ export interface IConfig {
   edit: boolean;
   saving: boolean;
   map: number;
+  mapLoading?: boolean;
 }
 
 // Stats and Tracks
@@ -250,6 +251,7 @@ export interface IMap {
     };
   };
   notes: string;
+  player?: string;
   cells: { [index: string]: IMapCell };
 }
 

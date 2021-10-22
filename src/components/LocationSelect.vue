@@ -68,7 +68,7 @@ export default defineComponent({
       let opts: ISelectOpt[] = [];
       Object.keys(campaign.data.maps[mapSelect.value].cells).forEach((c) => {
         if (campaign.data.maps[mapSelect.value].cells[c].stat === ECellStatus.Location) {
-          const { label } = CellLabel(campaign.data.maps[mapSelect.value].cells[c]);
+          const { label } = CellLabel(campaign.data.maps[mapSelect.value].cells[c], c);
           opts.push({
             label: label,
             value: c,

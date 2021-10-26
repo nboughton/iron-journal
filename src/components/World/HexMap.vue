@@ -9,7 +9,12 @@
   >
     <q-page-container>
       <q-page>
+        <div class="text-h6 row sf-header items-center q-pa-lg bg-dark" v-show="mapLoading">
+          Rendering Map...
+          <q-btn label="LOADING" flat loading />
+        </div>
         <div
+          v-show="!mapLoading"
           class="hexmap"
           ref="hexmap"
           :style="{
@@ -62,7 +67,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/require-await */
 import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
 
 import { ECellStatus, EMapItems, ISearchResults } from '../models';
@@ -75,6 +79,7 @@ import { extendHex, defineGrid, HexFactory, Grid, Hex } from 'honeycomb-grid';
 import { CellLabel, NewCell } from 'src/lib/world';
 import { colours } from 'src/lib/colours';
 import { icon } from 'src/lib/icons';
+import { sleep } from 'src/lib/util';
 
 import Cell from './Cell.vue';
 
@@ -92,6 +97,7 @@ export default defineComponent({
     const config = useConfig();
     const showDialog = ref(false);
     const selectedID = ref('');
+    const mapLoading = ref(true);
 
     const hexmap = ref(null);
     const h = (x: number, y: number): string => {
@@ -127,6 +133,7 @@ export default defineComponent({
     });
 
     const fullRender = () => {
+      mapLoading.value = true;
       void renderGrid().then(() => {
         renderFills();
         renderIcons();
@@ -137,6 +144,7 @@ export default defineComponent({
           origin: [0, 0],
           scale: campaign.data.maps[config.data.map].zoom,
         });
+        mapLoading.value = false;
       });
     };
 
@@ -155,6 +163,7 @@ export default defineComponent({
     };
 
     const renderGrid = async () => {
+      await sleep(0); // Needs an await somewhere to actually run asynchronously
       console.log('Rendering map');
       map.clear();
 
@@ -372,7 +381,6 @@ export default defineComponent({
       ],
       () => {
         console.log('Map config triggered render');
-        config.data.mapLoading = true;
         fullRender();
       },
       { deep: true }
@@ -418,6 +426,7 @@ export default defineComponent({
     return {
       campaign,
       config,
+      mapLoading,
       hexmap,
       click,
       showDialog,

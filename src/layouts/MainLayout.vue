@@ -218,14 +218,22 @@
             Ironsworn and Ironsworn Delve are &copy;
             <a href="https://www.ironswornrpg.com">Shawn Tomkin</a>
           </div>
+
           <div class="q-my-sm">
             Code &copy;
             <a href="https://twitter.com/tiberianpun">Nick Boughton</a>, 2021
           </div>
+
+          <div class="q-my-sm">
+            Made with icons from <a href="https://game-icons.net/">game-icons.net</a> by
+            <a href="https://lorcblog.blogspot.com/">Lorc</a> and <a href="https://delapouite.com/">Delapouite</a>
+          </div>
+
           <div class="q-my-sm">
             If you like this app and want to say thanks you can
             <a href="https://ko-fi.com/tiberianpun">buy me a coffee</a>
           </div>
+
           <div class="q-my-sm">
             With extra thanks to
             <a href="https://twitter.com/r_sek">rsek</a> for the amazing

@@ -26,6 +26,7 @@ import {
   ThemeDangers,
   ThemeFeatures,
 } from 'src/lib/oracles/delve/site_nature';
+import { Move } from 'src/lib/oracles/move';
 import { oracleRoll } from 'src/lib/roll';
 import { oracleOpts } from 'src/lib/util';
 import { NewSite } from 'src/lib/world';
@@ -67,10 +68,11 @@ export default defineComponent({
 
       if (!data.value.theme || !data.value.domain) return o;
 
-      o.table.push(...ThemeDangers[data.value.theme].table, ...DomainDangers[data.value.domain].table, {
-        match: [46, 100],
-        text: 'No danger',
-      });
+      o.table.push(
+        ...ThemeDangers[data.value.theme].table,
+        ...DomainDangers[data.value.domain].table,
+        ...Move['Reveal a Danger'].table.slice(2)
+      );
 
       return o;
     });

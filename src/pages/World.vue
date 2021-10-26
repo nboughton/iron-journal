@@ -44,7 +44,6 @@
     </div>
 
     <div class="row justify-center q-mb-md">
-      <q-btn size="xl" loading flat dense v-if="config.data.mapLoading" />
       <hex-map :searchResults="results" />
     </div>
 
@@ -153,7 +152,7 @@
           <q-input label="Search Label Size" type="number" v-model.number="mapConfig.srcLabel" />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn color="primary" flat label="Save" @click="saveMapConfig" :loading="config.data.mapLoading" />
+          <q-btn color="primary" flat label="Save" @click="saveMapConfig" />
         </q-card-actions>
       </q-card>
     </q-dialog>

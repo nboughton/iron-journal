@@ -95,7 +95,7 @@
           :key="mID"
           default-opened
           header-class="text-h4"
-          :label="`Map: ${campaign.data.maps[+mID].name}`"
+          :label="campaign.data.maps[+mID].name"
         >
           <i-input class="q-mb-sm" label="Map Notes" v-model="campaign.data.maps[+mID].notes" autogrow />
 
@@ -106,7 +106,7 @@
             default-opened
             v-for="(cell, cID) in map"
             :key="cID"
-            :label="`Cell: ${CellLabel(campaign.data.maps[+mID].cells[cID], cID).label}`"
+            :label="CellLabel(campaign.data.maps[+mID].cells[cID], cID).label"
           >
             <div class="q-pt-xs" />
             <q-card-section class="q-px-xs q-py-none" v-for="(itemIDs, oType) in cell" :key="oType">

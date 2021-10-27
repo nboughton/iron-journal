@@ -144,12 +144,25 @@
           <div class="col-grow">Map Config</div>
           <q-btn class="col-shrink" icon="close" flat dense @click="showMapConfig = false" />
         </q-card-section>
-        <q-card-section>
-          <q-input label="Height (px)" type="number" v-model.number="mapConfig.height" />
-          <q-input label="Width (px)" type="number" v-model.number="mapConfig.width" />
-          <q-input label="Hex Radius (px)" type="number" v-model.number="mapConfig.hex" :min="10" />
-          <q-input label="Location Label Size" type="number" v-model.number="mapConfig.locLabel" />
-          <q-input label="Search Label Size" type="number" v-model.number="mapConfig.srcLabel" />
+
+        <q-card-section class="text-justify">
+          Warning: Changing hex radius/width/height values will change the positioning of any locations you currently
+          have saved. You should aim to have your hexes configured before you start adding locations.
+        </q-card-section>
+
+        <q-card-section class="row justify-between q-gutter-sm">
+          <div class="col">
+            <q-input label="Height (px)" type="number" v-model.number="mapConfig.height" />
+            <q-input label="Width (px)" type="number" v-model.number="mapConfig.width" />
+            <q-input label="Location Label Size" type="number" v-model.number="mapConfig.locLabel" />
+            <q-input label="Search Label Size" type="number" v-model.number="mapConfig.srcLabel" />
+          </div>
+          <div class="col">
+            <q-input label="Hex Radius (px)" type="number" v-model.number="mapConfig.hex" :min="10" />
+            <q-input label="Hexes (wide)" type="number" v-model.number="mapConfig.hexW" :min="0" />
+            <q-input label="Hexes (high)" type="number" v-model.number="mapConfig.hexH" :min="0" />
+            <q-toggle label="Flat hexes" v-model="mapConfig.flat" />
+          </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn color="primary" flat label="Save" @click="saveMapConfig" />
@@ -187,6 +200,7 @@ import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 
 import { CellLabel, NewMap } from 'src/lib/world';
+import { estimateHexH, estimateHexW } from 'src/lib/util';
 
 import HexMap from 'src/components/World/HexMap.vue';
 import IInput from 'src/components/IInput.vue';
@@ -343,6 +357,9 @@ export default defineComponent({
       height: 0,
       width: 0,
       hex: 0,
+      hexW: 0,
+      hexH: 0,
+      flat: false,
       locLabel: 0,
       srcLabel: 0,
     });
@@ -350,6 +367,13 @@ export default defineComponent({
       mapConfig.value.height = campaign.data.maps[config.data.map].height;
       mapConfig.value.width = campaign.data.maps[config.data.map].width;
       mapConfig.value.hex = campaign.data.maps[config.data.map].hexSize;
+      mapConfig.value.hexW = campaign.data.maps[config.data.map].hexW
+        ? (campaign.data.maps[config.data.map].hexW as number)
+        : estimateHexW(campaign.data.maps[config.data.map].width, campaign.data.maps[config.data.map].hexSize);
+      mapConfig.value.hexH = campaign.data.maps[config.data.map].hexH
+        ? (campaign.data.maps[config.data.map].hexH as number)
+        : estimateHexH(campaign.data.maps[config.data.map].height, campaign.data.maps[config.data.map].hexSize);
+      mapConfig.value.flat = campaign.data.maps[config.data.map].hexFlat || false;
       mapConfig.value.locLabel = campaign.data.maps[config.data.map].fonts.label.size;
       mapConfig.value.srcLabel = campaign.data.maps[config.data.map].fonts.search.size;
       showMapConfig.value = true;
@@ -360,6 +384,9 @@ export default defineComponent({
         height: mapConfig.value.height,
         width: mapConfig.value.width,
         hexSize: mapConfig.value.hex,
+        hexW: mapConfig.value.hexW,
+        hexH: mapConfig.value.hexH,
+        hexFlat: mapConfig.value.flat,
       });
       campaign.data.maps[config.data.map].fonts.label.size = mapConfig.value.locLabel;
       campaign.data.maps[config.data.map].fonts.search.size = mapConfig.value.srcLabel;

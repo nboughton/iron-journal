@@ -21,3 +21,13 @@ export const oracleOpts = (o: IOracle): string[] => {
 
   return opts;
 };
+
+export const estimateHexW = (w: number, r: number): number => {
+  const hw = r * 2; // width of 1 hex
+
+  return Math.ceil(w / hw) + Math.ceil(w % hw);
+};
+
+export const estimateHexH = (h: number, r: number): number => {
+  return Math.ceil(h / (r * 1.5));
+};

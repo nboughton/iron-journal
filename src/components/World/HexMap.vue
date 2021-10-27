@@ -4,7 +4,7 @@
     container
     :style="{
       width: `${campaign.data.maps[config.data.map].width + 20}px`,
-      height: '600px',
+      height: '500px',
     }"
   >
     <q-page-container>
@@ -79,7 +79,7 @@ import { extendHex, defineGrid, HexFactory, Grid, Hex } from 'honeycomb-grid';
 import { CellLabel, NewCell } from 'src/lib/world';
 import { colours } from 'src/lib/colours';
 import { icon } from 'src/lib/icons';
-import { sleep } from 'src/lib/util';
+import { estimateHexH, estimateHexW, sleep } from 'src/lib/util';
 
 import Cell from './Cell.vue';
 
@@ -105,21 +105,24 @@ export default defineComponent({
     };
 
     const width = (): number => {
+      if (campaign.data.maps[config.data.map].hexW) return campaign.data.maps[config.data.map].hexW as number;
+
       const w = campaign.data.maps[config.data.map].width; // Map width in px
       const r = campaign.data.maps[config.data.map].hexSize; // hex radius
-      const hw = r * 2; // width of 1 hex
-
-      return Math.ceil(w / hw) + Math.ceil(w % hw);
+      return estimateHexW(w, r);
     };
 
     const height = (): number => {
-      return Math.ceil(
-        campaign.data.maps[config.data.map].height / (campaign.data.maps[config.data.map].hexSize * 1.5)
-      );
+      if (campaign.data.maps[config.data.map].hexH) return campaign.data.maps[config.data.map].hexH as number;
+
+      return estimateHexH(campaign.data.maps[config.data.map].height, campaign.data.maps[config.data.map].hexSize);
     };
 
     // Create initial values
-    let Hx: HexFactory<{ size: number }> = extendHex({ size: campaign.data.maps[config.data.map].hexSize });
+    let Hx: HexFactory<{ size: number; orientation: 'flat' | 'pointy' }> = extendHex({
+      size: campaign.data.maps[config.data.map].hexSize,
+      orientation: campaign.data.maps[config.data.map].hexFlat ? 'flat' : 'pointy',
+    });
     let Grid = defineGrid(Hx);
     let grid: Grid<Hex<{ size: number }>>;
 
@@ -167,7 +170,10 @@ export default defineComponent({
       console.log('Rendering map');
       map.clear();
 
-      Hx = extendHex({ size: campaign.data.maps[config.data.map].hexSize });
+      Hx = extendHex({
+        size: campaign.data.maps[config.data.map].hexSize,
+        orientation: campaign.data.maps[config.data.map].hexFlat ? 'flat' : 'pointy',
+      });
       Grid = defineGrid(Hx);
       grid = Grid.rectangle({
         width: width(),
@@ -378,6 +384,9 @@ export default defineComponent({
         campaign.data.maps[config.data.map].height,
         campaign.data.maps[config.data.map].width,
         campaign.data.maps[config.data.map].hexSize,
+        campaign.data.maps[config.data.map].hexFlat,
+        campaign.data.maps[config.data.map].hexW,
+        campaign.data.maps[config.data.map].hexH,
       ],
       () => {
         console.log('Map config triggered render');

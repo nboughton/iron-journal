@@ -240,7 +240,10 @@ export interface IMap {
   image: string;
   height: number;
   width: number;
+  hexH?: number;
+  hexW?: number;
   hexSize: number;
+  hexFlat?: boolean;
   zoom: number;
   fonts: {
     label: {

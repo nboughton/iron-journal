@@ -181,39 +181,6 @@
 
     <q-separator />
 
-    <!-- Vows -->
-    <div class="text-h4 text-center q-mt-md q-mb-sm">Vows<q-btn icon="add_circle" flat dense @click="addVow" /></div>
-    <progress-track
-      class="q-mb-md"
-      v-for="(vow, vIndex) in campaign.data.character.vows"
-      :key="vIndex"
-      v-model="campaign.data.character.vows[vIndex]"
-    >
-      <template v-slot:action v-if="config.data.edit">
-        <q-btn class="col-shrink" icon="delete" flat dense @click="removeVow(vIndex)" />
-      </template>
-    </progress-track>
-
-    <q-separator />
-
-    <!-- Progress -->
-    <div class="text-h4 text-center q-mt-md q-mb-sm">
-      Progress<q-btn icon="add_circle" flat dense @click="addTrack" />
-    </div>
-    <progress-track
-      class="q-mb-md"
-      v-for="(track, pIndex) in campaign.data.progressTracks"
-      :key="pIndex"
-      v-model="campaign.data.progressTracks[pIndex]"
-      :showMenaceBtn="false"
-    >
-      <template v-slot:action v-if="config.data.edit">
-        <q-btn class="col-shrink" icon="delete" flat dense @click="removeTrack(pIndex)" />
-      </template>
-    </progress-track>
-
-    <q-separator />
-
     <div class="row">
       <!-- Debilities -->
       <div class="col-12 text-h4 text-center q-pt-md">Debilities</div>
@@ -272,8 +239,6 @@ import { defineComponent, ref } from 'vue';
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 
-import { NewProgressTrack } from 'src/lib/tracks';
-
 import ResourceTrack from 'src/components/Tracks/ResourceTrack.vue';
 import ProgressTrack from 'src/components/Tracks/ProgressTrack.vue';
 import Stats from 'src/components/Stats.vue';
@@ -286,12 +251,6 @@ export default defineComponent({
   components: { ResourceTrack, Stats, ProgressTrack, Asset, Assets, IInput },
   setup() {
     const campaign = useCampaign();
-
-    const addVow = () => campaign.data.character.vows.push(NewProgressTrack());
-    const removeVow = (index: number) => campaign.data.character.vows.splice(index, 1);
-
-    const addTrack = () => campaign.data.progressTracks.push(NewProgressTrack());
-    const removeTrack = (index: number) => campaign.data.progressTracks.splice(index, 1);
 
     const removeAsset = (index: number) => campaign.data.character.assets.splice(index, 1);
     const showAssetSelect = ref(false);
@@ -334,12 +293,6 @@ export default defineComponent({
 
     return {
       campaign,
-
-      addVow,
-      removeVow,
-
-      addTrack,
-      removeTrack,
 
       removeAsset,
       showAssetSelect,

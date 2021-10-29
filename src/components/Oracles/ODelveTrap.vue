@@ -1,7 +1,9 @@
 <template>
-  <o-input label="Event" v-model="data.event" @roll="roll.Event" />
-  <o-input label="Component" v-model="data.component" @roll="roll.Component" />
-  <o-btns clear @clear="clear" />
+  <div class="card-bg q-pa-xs">
+    <o-input label="Event" v-model="data.event" @roll="roll.Event" />
+    <o-input label="Component" v-model="data.component" @roll="roll.Component" />
+    <o-btns clear @clear="clear" />
+  </div>
 </template>
 
 <script lang="ts">

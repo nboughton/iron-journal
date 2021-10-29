@@ -1,16 +1,18 @@
 <template>
-  <div class="row items-center">
-    <q-select class="col-grow" label="Category" v-model="data.categories" :options="opts" multiple dense />
-    <q-btn class="col-shrink" icon="mdi-dice-6" flat dense @click="rollCategory" />
+  <div class="card-bg q-pa-xs">
+    <div class="row items-center">
+      <q-select class="col-grow" label="Category" v-model="data.categories" :options="opts" multiple dense />
+      <q-btn class="col-shrink" icon="mdi-dice-6" flat dense @click="rollCategory" />
+    </div>
+    <o-input
+      v-for="(cat, index) in data.categories"
+      :key="index"
+      :label="cat"
+      v-model="data.results[cat]"
+      @roll="data.results[cat] = oracleRoll(Threat[cat])"
+    />
+    <o-btns clear @clear="clear" />
   </div>
-  <o-input
-    v-for="(cat, index) in data.categories"
-    :key="index"
-    :label="cat"
-    v-model="data.results[cat]"
-    @roll="data.results[cat] = oracleRoll(Threat[cat])"
-  />
-  <o-btns clear @clear="clear" />
 </template>
 
 <script lang="ts">

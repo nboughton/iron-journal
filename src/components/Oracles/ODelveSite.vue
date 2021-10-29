@@ -1,14 +1,16 @@
 <template>
-  <div class="row items-center">
-    <q-select class="col-grow" label="Theme" :options="oracleOpts(SiteNature.Theme)" v-model="data.theme" dense />
-    <q-btn class="col-shrink" icon="mdi-dice-6" flat dense @click="roll.Theme" />
-    <q-select class="col-grow" label="Domain" :options="oracleOpts(SiteNature.Domain)" v-model="data.domain" dense />
-    <q-btn class="col-shrink" icon="mdi-dice-6" flat dense @click="roll.Domain" />
+  <div class="card-bg q-pa-xs">
+    <div class="row items-center">
+      <q-select class="col-grow" label="Theme" :options="oracleOpts(SiteNature.Theme)" v-model="data.theme" dense />
+      <q-btn class="col-shrink" icon="mdi-dice-6" flat dense @click="roll.Theme" />
+      <q-select class="col-grow" label="Domain" :options="oracleOpts(SiteNature.Domain)" v-model="data.domain" dense />
+      <q-btn class="col-shrink" icon="mdi-dice-6" flat dense @click="roll.Domain" />
+    </div>
+    <o-input label="Name" v-model="data.name" @roll="roll.Name" />
+    <o-input label="Feature" v-model="data.feature" @roll="roll.Feature" />
+    <o-input label="Danger" v-model="data.danger" @roll="roll.Danger" />
+    <o-btns clear @clear="btns.Clear" initial @initial="btns.Initial" save @save="btns.Save" />
   </div>
-  <o-input label="Name" v-model="data.name" @roll="roll.Name" />
-  <o-input label="Feature" v-model="data.feature" @roll="roll.Feature" />
-  <o-input label="Danger" v-model="data.danger" @roll="roll.Danger" />
-  <o-btns clear @clear="btns.Clear" initial @initial="btns.Initial" save @save="btns.Save" />
 </template>
 
 <script lang="ts">

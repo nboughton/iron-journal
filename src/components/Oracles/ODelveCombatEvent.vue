@@ -1,7 +1,9 @@
 <template>
-  <o-input label="Method" v-model="data.method" @roll="roll.Method" />
-  <o-input label="Target" v-model="data.target" @roll="roll.Target" />
-  <o-btns clear @clear="clear" />
+  <div class="card-bg q-pa-xs">
+    <o-input label="Method" v-model="data.method" @roll="roll.Method" />
+    <o-input label="Target" v-model="data.target" @roll="roll.Target" />
+    <o-btns clear @clear="clear" />
+  </div>
 </template>
 
 <script lang="ts">

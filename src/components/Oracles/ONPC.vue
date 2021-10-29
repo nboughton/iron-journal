@@ -1,13 +1,15 @@
 <template>
-  <q-select label="Kin" v-model="data.kin" :options="Object.values(EKin)" dense />
-  <o-input label="Name" v-model="data.name" @roll="roll.Name" />
-  <o-input label="Pronouns" v-model="data.pronouns" no-roll />
-  <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" reroll :maxRerolls="3" />
-  <o-input label="Disposition" v-model="data.disposition" @roll="roll.Disp" />
-  <o-input label="Role" v-model="data.role" @roll="roll.Role" />
-  <o-input label="Goal" v-model="data.goal" @roll="roll.Goal" />
-  <o-input label="Activity" v-model="data.activity" @roll="roll.Activity" />
-  <o-btns save @save="btns.Save" clear @clear="btns.Clear" initial @initial="btns.Initial" />
+  <div class="card-bg q-pa-xs">
+    <q-select label="Kin" v-model="data.kin" :options="Object.values(EKin)" dense />
+    <o-input label="Name" v-model="data.name" @roll="roll.Name" />
+    <o-input label="Pronouns" v-model="data.pronouns" no-roll />
+    <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" reroll :maxRerolls="3" />
+    <o-input label="Disposition" v-model="data.disposition" @roll="roll.Disp" />
+    <o-input label="Role" v-model="data.role" @roll="roll.Role" />
+    <o-input label="Goal" v-model="data.goal" @roll="roll.Goal" />
+    <o-input label="Activity" v-model="data.activity" @roll="roll.Activity" />
+    <o-btns save @save="btns.Save" clear @clear="btns.Clear" initial @initial="btns.Initial" />
+  </div>
 </template>
 
 <script lang="ts">

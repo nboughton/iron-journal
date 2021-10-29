@@ -1,11 +1,13 @@
 <template>
-  <o-input label="Action" v-model="data.action" @roll="roll.Action" />
-  <o-input label="Theme" v-model="data.theme" @roll="roll.Theme" />
-  <o-input label="Combat Action" v-model="data.combatAction" @roll="roll.Combat" />
-  <o-input label="Major Plot Twist" v-model="data.majorPlotTwist" @roll="roll.Twist" />
-  <o-input label="Mystic Backlash" v-model="data.mysticBacklash" @roll="roll.Backlash" />
-  <o-input label="Challenge Rank" v-model="data.challengeRank" @roll="roll.Rank" />
-  <o-btns clear @clear="clear" />
+  <div class="card-bg q-pa-xs">
+    <o-input label="Action" v-model="data.action" @roll="roll.Action" />
+    <o-input label="Theme" v-model="data.theme" @roll="roll.Theme" />
+    <o-input label="Combat Action" v-model="data.combatAction" @roll="roll.Combat" />
+    <o-input label="Major Plot Twist" v-model="data.majorPlotTwist" @roll="roll.Twist" />
+    <o-input label="Mystic Backlash" v-model="data.mysticBacklash" @roll="roll.Backlash" />
+    <o-input label="Challenge Rank" v-model="data.challengeRank" @roll="roll.Rank" />
+    <o-btns clear @clear="clear" />
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,9 +1,11 @@
 <template>
-  <o-input label="Size" v-model="data.size" @roll="roll.Size" />
-  <o-input label="Primary Form" v-model="data.form" @roll="roll.Form" />
-  <o-input label="Characteristics" v-model="data.characteristics" @roll="roll.Char" />
-  <o-input label="Abilities" v-model="data.abilities" @roll="roll.Abl" />
-  <o-btns clear @clear="clear" />
+  <div class="card-bg q-pa-xs">
+    <o-input label="Size" v-model="data.size" @roll="roll.Size" />
+    <o-input label="Primary Form" v-model="data.form" @roll="roll.Form" />
+    <o-input label="Characteristics" v-model="data.characteristics" @roll="roll.Char" />
+    <o-input label="Abilities" v-model="data.abilities" @roll="roll.Abl" />
+    <o-btns clear @clear="clear" />
+  </div>
 </template>
 
 <script lang="ts">

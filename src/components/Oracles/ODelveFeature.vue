@@ -1,7 +1,9 @@
 <template>
-  <o-input label="Aspect" v-model="data.aspect" @roll="roll.Aspect" />
-  <o-input label="Focus" v-model="data.focus" @roll="roll.Focus" />
-  <o-btns clear @clear="clear" />
+  <div class="card-bg q-pa-xs">
+    <o-input label="Aspect" v-model="data.aspect" @roll="roll.Aspect" />
+    <o-input label="Focus" v-model="data.focus" @roll="roll.Focus" />
+    <o-btns clear @clear="clear" />
+  </div>
 </template>
 
 <script lang="ts">

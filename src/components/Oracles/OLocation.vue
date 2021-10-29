@@ -1,14 +1,16 @@
 <template>
-  <o-input label="Region" v-model="data.region" @roll="roll.Region" />
-  <div class="row items-center">
-    <q-select class="col-grow" label="Location" v-model="data.type" :options="locationOpts" dense />
-    <q-btn class="col-shrink" flat dense icon="mdi-dice-6" @click="roll.Location" />
-  </div>
-  <o-input label="Name" v-model="data.name" @roll="roll.Name" />
-  <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" />
-  <o-input label="Trouble" v-model="data.trouble" @roll="roll.Trouble" />
+  <div class="card-bg q-pa-xs">
+    <o-input label="Region" v-model="data.region" @roll="roll.Region" />
+    <div class="row items-center">
+      <q-select class="col-grow" label="Location" v-model="data.type" :options="locationOpts" dense />
+      <q-btn class="col-shrink" flat dense icon="mdi-dice-6" @click="roll.Location" />
+    </div>
+    <o-input label="Name" v-model="data.name" @roll="roll.Name" />
+    <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" />
+    <o-input label="Trouble" v-model="data.trouble" @roll="roll.Trouble" />
 
-  <o-btns clear @clear="btns.Clear" save @save="btns.Save" initial @initial="btns.Initial" />
+    <o-btns clear @clear="btns.Clear" save @save="btns.Save" initial @initial="btns.Initial" />
+  </div>
 </template>
 
 <script lang="ts">

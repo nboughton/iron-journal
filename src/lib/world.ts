@@ -4,6 +4,7 @@ import { NewProgressTrack } from './tracks';
 export const NewNPC = (kin?: string): INPC => {
   return {
     name: '',
+    pronouns: '',
     kin: kin ? kin : EKin.Ironlander,
     bond: false,
     role: '',

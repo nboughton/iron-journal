@@ -1,6 +1,7 @@
 <template>
   <q-select label="Kin" v-model="data.kin" :options="Object.values(EKin)" dense />
   <o-input label="Name" v-model="data.name" @roll="roll.Name" />
+  <o-input label="Pronouns" v-model="data.pronouns" no-roll />
   <o-input label="Descriptor" v-model="data.descriptor" @roll="roll.Desc" reroll :maxRerolls="3" />
   <o-input label="Disposition" v-model="data.disposition" @roll="roll.Disp" />
   <o-input label="Role" v-model="data.role" @roll="roll.Role" />

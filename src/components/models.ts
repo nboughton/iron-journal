@@ -152,6 +152,7 @@ export enum EKin {
 
 export interface INPC {
   name: string;
+  pronouns?: string;
   kin: string;
   bond: boolean;
   role: string;

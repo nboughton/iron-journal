@@ -83,17 +83,27 @@
             <q-tooltip>Roll +Attribute</q-tooltip>
           </q-btn>
 
-          <q-btn
-            class="col-shrink"
-            dense
-            flat
-            :label="campaign.data.character.tracks.momentum.value"
-            icon="mdi-fire"
-            @click="burn"
-            :size="btnSize"
-          >
-            <q-tooltip>Burn Momentum</q-tooltip>
-          </q-btn>
+          <div class="col-shrink">
+            <div class="row items-center">
+              <q-btn class="col-shrink" dense flat icon="remove" @click="mDec" :size="btnSize">
+                <q-tooltip>Decrement Momentum</q-tooltip>
+              </q-btn>
+              <q-btn
+                class="col-shrink"
+                dense
+                flat
+                :label="campaign.data.character.tracks.momentum.value"
+                icon="mdi-fire"
+                @click="burn"
+                :size="btnSize"
+              >
+                <q-tooltip>Burn Momentum</q-tooltip>
+              </q-btn>
+              <q-btn class="col-shrink" dense flat icon="add" @click="mInc" :size="btnSize">
+                <q-tooltip>Increment Momentum</q-tooltip>
+              </q-btn>
+            </div>
+          </div>
 
           <q-btn class="col-shrink" dense flat @click="d100" :size="btnSize">
             <q-icon :name="`img:${icon.d10()}`" />
@@ -198,6 +208,16 @@ export default defineComponent({
       }
     };
 
+    const mInc = () => {
+      if (campaign.data.character.tracks.momentum.value < campaign.data.character.tracks.momentum.max)
+        campaign.data.character.tracks.momentum.value++;
+    };
+
+    const mDec = () => {
+      if (campaign.data.character.tracks.momentum.value > campaign.data.character.tracks.momentum.min)
+        campaign.data.character.tracks.momentum.value--;
+    };
+
     const adIcon = computed(() => {
       const m = campaign.data.character.tracks.momentum.value;
       return m < 0 && Math.abs(m) === data.value.action.die
@@ -255,6 +275,8 @@ export default defineComponent({
       reroll,
       burn,
       burnt,
+      mDec,
+      mInc,
       data,
       saveResult,
 

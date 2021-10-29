@@ -69,7 +69,7 @@ export const Assets: { [index: string]: IAsset } = {
 
     items: [
       {
-        text: '<p>When you <em>Secure an Advantage</em> by taking a moment to aim, choose your approach and add +1.\n  * Trust your instincts: Roll +wits, and take +2 momentum on a strong hit.\n  * Line up your shot: Roll +edge, and take +1 momentum on a hit.</p>\n',
+        text: '<p>When you <em>Secure an Advantage</em> by taking a moment to aim, choose your approach and add +1.\n  <ul><li> Trust your instincts: Roll +wits, and take +2 momentum on a strong hit.\n</li><li> Line up your shot: Roll +edge, and take +1 momentum on a hit.</li></ul></p>\n',
         marked: true,
       },
       {

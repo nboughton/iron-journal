@@ -24,7 +24,9 @@
         </div>
 
         <div class="row items-center justify-between text-h6">
-          <q-icon v-if="!burnt" :name="adIcon" size="md" />
+          <q-btn v-if="!burnt" :icon="adIcon" size="md" flat dense @click="reroll(true, false, false)">
+            <q-tooltip>Reroll Action die</q-tooltip>
+          </q-btn>
           <span v-if="!burnt">+</span>
           <span v-if="!burnt">{{ attribute }}</span>
           <span v-if="!burnt">+</span>
@@ -33,9 +35,16 @@
           <span v-if="burnt">Momentum</span>
           <span v-if="burnt">=</span>
           <span :class="data.action.color">{{ data.action.score }}</span
-          ><span>vs</span> <span :class="data.challenge.die1.color">{{ data.challenge.die1.roll }}</span
-          ><span>|</span>
-          <span :class="data.challenge.die2.color">{{ data.challenge.die2.roll }}</span>
+          ><span>vs</span>
+          <q-btn :class="data.challenge.die1.color" outline round size="md" @click="reroll(false, true, false)">
+            {{ data.challenge.die1.roll }}
+            <q-tooltip>Reroll Challenge die</q-tooltip>
+          </q-btn>
+
+          <q-btn :class="data.challenge.die2.color" outline round size="md" @click="reroll(false, false, true)">
+            {{ data.challenge.die2.roll }}
+            <q-tooltip>Reroll Challenge die</q-tooltip>
+          </q-btn>
           <q-btn class="col-shrink" dense flat icon="mdi-backspace-outline" @click="data.result = ''" :size="btnSize">
             <q-tooltip>Clear Roll Results</q-tooltip>
           </q-btn>
@@ -199,6 +208,29 @@ export default defineComponent({
     const d100Res = ref(0);
     const d100 = () => (d100Res.value = d(100));
 
+    const reroll = (action: boolean, cd1: boolean, cd2: boolean) => {
+      if (action) data.value.action.die = d(6);
+      if (cd1) data.value.challenge.die1.roll = d(10);
+      if (cd2) data.value.challenge.die2.roll = d(10);
+
+      data.value.action.score = +data.value.action.die + +adds.value + +attribute.value;
+      // Account for negative momentum
+      if (
+        campaign.data.character.tracks.momentum.value < 0 &&
+        Math.abs(campaign.data.character.tracks.momentum.value) === Math.abs(data.value.action.die)
+      ) {
+        data.value.action.score -= data.value.action.die;
+      }
+
+      data.value.challenge.match = false;
+
+      if (data.value.challenge.die1.roll === data.value.challenge.die2.roll) {
+        data.value.challenge.match = true;
+      }
+
+      data.value = updateResults(data.value);
+    };
+
     const saveResult = () => {
       if (!data.value.result) return;
 
@@ -220,6 +252,7 @@ export default defineComponent({
       opts,
 
       roll,
+      reroll,
       burn,
       burnt,
       data,

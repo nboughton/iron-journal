@@ -68,6 +68,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
+import { dom } from 'quasar';
 
 import { ECellStatus, EMapItems, ISearchResults } from '../models';
 
@@ -82,6 +83,7 @@ import { icon } from 'src/lib/icons';
 import { estimateHexH, estimateHexW, sleep } from 'src/lib/util';
 
 import Cell from './Cell.vue';
+
 
 export default defineComponent({
   name: 'HexMap',
@@ -371,10 +373,10 @@ export default defineComponent({
     // Zoom
     watch(
       () => campaign.data.maps[config.data.map].zoom,
-      () =>
-        map.transform({
-          origin: [0, 0],
-          scale: campaign.data.maps[config.data.map].zoom,
+      () => // Because Safari.
+        dom.css(hexmap.value as unknown as HTMLElement, {
+          transformOrigin: '0 0',
+          scale: `${campaign.data.maps[config.data.map].zoom}`
         })
     );
 

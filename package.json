@@ -10,19 +10,21 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.11.3",
+    "@quasar/extras": "^1.14.0",
     "@svgdotjs/svg.js": "^3.1.1",
     "core-js": "^3.19.0",
     "dexie": "^3.0.3",
     "honeycomb-grid": "^3.1.8",
-    "pinia": "^2.0.0-rc.10",
-    "quasar": "^2.2.1",
+    "pinia": "^2.0.0",
+    "quasar": "^2.7.1",
     "sanitize-html": "^2.5.2",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.15.8",
-    "@quasar/app": "^3.1.6",
+    "@quasar/app-webpack": "^3.5.3",
     "@types/node": "^16.11.6",
     "@types/sanitize-html": "^2.5.0",
     "@types/uuid": "^8.3.1",

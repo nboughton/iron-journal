@@ -293,7 +293,7 @@ export default defineComponent({
 
     const $q = useQuasar();
     const width = computed((): number => {
-      if ($q.screen.lt.sm || $q.platform.is.mobile) {
+      if (!$q.platform.is.ipad && ($q.screen.lt.sm || $q.platform.is.mobile)) {
         return Math.floor($q.screen.width * 0.9);
       }
       return Math.floor($q.screen.width * 0.4);

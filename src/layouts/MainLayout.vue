@@ -293,10 +293,9 @@ export default defineComponent({
 
     const $q = useQuasar();
     const width = computed((): number => {
-      if (!$q.platform.is.ipad && ($q.screen.lt.sm || $q.platform.is.mobile)) {
-        return Math.floor($q.screen.width * 0.9);
-      }
-      return Math.floor($q.screen.width * 0.4);
+      return !$q.platform.is.ipad && ($q.screen.lt.sm || $q.platform.is.mobile)
+        ? Math.floor($q.screen.width * 0.9)
+        : Math.floor($q.screen.width * 0.4);
     });
     const btnSize = computed((): string => {
       if ($q.screen.lt.sm) {

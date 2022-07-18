@@ -245,6 +245,8 @@ export interface IMap {
   hexW?: number;
   hexSize: number;
   hexFlat?: boolean;
+  scrollX?: number;
+  scrollY?: number;
   zoom: number;
   fonts: {
     label: {

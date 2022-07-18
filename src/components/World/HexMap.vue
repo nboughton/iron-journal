@@ -8,7 +8,7 @@
     }"
   >
     <q-page-container>
-      <q-page>
+      <q-page v-scroll="onScroll" ref="mapbox">
         <div class="text-h6 row sf-header items-center q-pa-lg bg-dark" v-show="mapLoading">
           Rendering Map...
           <q-btn label="LOADING" flat loading />
@@ -17,6 +17,7 @@
           v-show="!mapLoading"
           class="hexmap"
           ref="hexmap"
+          id="hexmap"
           :style="{
             minWidth: `${campaign.data.maps[config.data.map].width}px`,
             height: `${campaign.data.maps[config.data.map].height}px`,
@@ -67,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
+import { defineComponent, onMounted, ref, PropType, watch, Ref } from 'vue';
 import { dom, useQuasar } from 'quasar';
 
 import { ECellStatus, EMapItems, ISearchResults } from '../models';
@@ -94,6 +95,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const hexmap: Ref<HTMLElement | null> = ref(null);
+
     const campaign = useCampaign();
     const config = useConfig();
     const $q = useQuasar();
@@ -102,7 +105,12 @@ export default defineComponent({
     const selectedID = ref('');
     const mapLoading = ref(true);
 
-    const hexmap = ref(null);
+    const onScroll = (y: number, x: number) => {
+      console.log(x, y);
+      campaign.data.maps[config.data.map].scrollX = x;
+      campaign.data.maps[config.data.map].scrollY = y;
+    };
+
     const h = (x: number, y: number): string => {
       return `h-${x}-${y}`;
     };
@@ -130,28 +138,28 @@ export default defineComponent({
     let grid: Grid<Hex<{ size: number }>>;
 
     let map: Svg;
-    onMounted(() => {
+    onMounted(async () => {
       console.log('initial map render');
       map = SVG()
-        .addTo(hexmap.value as unknown as HTMLElement)
+        .addTo(hexmap.value as HTMLElement)
         .size('100%', '100%');
-      fullRender();
+
+      await fullRender();
     });
 
-    const fullRender = () => {
+    const fullRender = async () => {
       mapLoading.value = true;
-      void renderGrid().then(() => {
-        renderFills();
-        renderIcons();
-        renderLabels();
-        renderSearch();
-        renderPlayer();
-        map.transform({
-          origin: [0, 0],
-          scale: campaign.data.maps[config.data.map].zoom,
-        });
-        mapLoading.value = false;
+      await renderGrid();
+      renderFills();
+      renderIcons();
+      renderLabels();
+      renderSearch();
+      renderPlayer();
+      map.transform({
+        origin: [0, 0],
+        scale: campaign.data.maps[config.data.map].zoom,
       });
+      mapLoading.value = false;
     };
 
     // Render functions
@@ -377,7 +385,7 @@ export default defineComponent({
       () => {
         // Because Safari...
         $q.platform.is.safari
-          ? dom.css(hexmap.value as unknown as HTMLElement, {
+          ? dom.css(hexmap.value as HTMLElement, {
               transformOrigin: '0 0',
               scale: `${campaign.data.maps[config.data.map].zoom}`,
             })
@@ -400,7 +408,7 @@ export default defineComponent({
       ],
       () => {
         console.log('Map config triggered render');
-        fullRender();
+        void fullRender();
       },
       { deep: true }
     );
@@ -448,6 +456,7 @@ export default defineComponent({
       mapLoading,
       hexmap,
       click,
+      onScroll,
       showDialog,
       selectedID,
       ECellStatus,

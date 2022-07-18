@@ -1,97 +1,119 @@
-import { IRollData, IOracle } from 'src/components/models'
+import { IRollData, IOracle } from 'src/components/models';
 
-export const d = (size: number) => { return Math.floor(Math.random() * size) + 1 }
+export const d = (size: number) => {
+  return Math.floor(Math.random() * size) + 1;
+};
 
 export const NewRollData = (): IRollData => {
   return {
     action: {
       die: 0,
       score: 0,
-      color: 'text-negative'
+      color: 'text-negative',
     },
     challenge: {
       die1: {
         roll: 0,
-        color: 'text-negative'
+        color: 'text-negative',
       },
       die2: {
         roll: 0,
-        color: 'text-negative'
+        color: 'text-negative',
       },
-      match: false
+      match: false,
     },
     progress: false,
-    result: ''
-  }
-}
+    result: '',
+  };
+};
 
 export const updateResults = (r: IRollData): IRollData => {
   if (r.action.score > r.challenge.die1.roll && r.action.score > r.challenge.die2.roll) {
-    r.result = 'Strong Hit'
-    r.action.color = 'text-positive'
-    r.challenge.die1.color = 'text-positive'
-    r.challenge.die2.color = 'text-positive'
-  } else if ((r.action.score <= r.challenge.die1.roll && r.action.score > r.challenge.die2.roll) ||
-    (r.action.score <= r.challenge.die2.roll && r.action.score > r.challenge.die1.roll)) {
-    r.result = 'Weak Hit'
-    r.action.color = 'text-warning'
+    r.result = 'Strong Hit';
+    r.action.color = 'text-positive';
+    r.challenge.die1.color = 'text-positive';
+    r.challenge.die2.color = 'text-positive';
+  } else if (
+    (r.action.score <= r.challenge.die1.roll && r.action.score > r.challenge.die2.roll) ||
+    (r.action.score <= r.challenge.die2.roll && r.action.score > r.challenge.die1.roll)
+  ) {
+    r.result = 'Weak Hit';
+    r.action.color = 'text-warning';
     r.action.score <= r.challenge.die1.roll
-      ? r.challenge.die1.color = 'text-negative'
-      : r.challenge.die1.color = 'text-positive'
+      ? (r.challenge.die1.color = 'text-negative')
+      : (r.challenge.die1.color = 'text-positive');
 
     r.action.score <= r.challenge.die2.roll
-      ? r.challenge.die2.color = 'text-negative'
-      : r.challenge.die2.color = 'text-positive'
+      ? (r.challenge.die2.color = 'text-negative')
+      : (r.challenge.die2.color = 'text-positive');
   } else {
-    r.result = 'Miss'
-    r.action.color = 'text-negative'
-    r.challenge.die1.color = 'text-negative'
-    r.challenge.die2.color = 'text-negative'
+    r.result = 'Miss';
+    r.action.color = 'text-negative';
+    r.challenge.die1.color = 'text-negative';
+    r.challenge.die2.color = 'text-negative';
   }
 
-  return r
-}
+  return r;
+};
 
-export const moveRoll = (attr: number, adds: number, momentum: number, progress: boolean, progressScore?: number): IRollData => {
-  let r = NewRollData()
-  r.action.die = d(6)
-  r.challenge.die1.roll = d(10)
-  r.challenge.die2.roll = d(10)
+export const moveRoll = (
+  attr: number,
+  adds: number,
+  momentum: number,
+  progress: boolean,
+  progressScore?: number
+): IRollData => {
+  let r = NewRollData();
+  r.action.die = d(6);
+  r.challenge.die1.roll = d(10);
+  r.challenge.die2.roll = d(10);
 
-  r.action.score = +r.action.die + +adds + +attr
+  r.action.score = +r.action.die + +adds + +attr;
   // Account for negative momentum
   if (momentum < 0 && Math.abs(momentum) === Math.abs(r.action.die)) {
-    r.action.score -= r.action.die
+    r.action.score -= r.action.die;
   }
 
   // Replace action score for a progress move
   if (progress) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    r.action.score = progressScore!
+    r.action.score = progressScore!;
   }
-  r.challenge.match = false
+  r.challenge.match = false;
 
-  r = updateResults(r)
+  r = updateResults(r);
 
   if (r.challenge.die1.roll === r.challenge.die2.roll) {
-    r.challenge.match = true
+    r.challenge.match = true;
   }
 
-  return r
-}
+  return r;
+};
 
 export const oracleRoll = (oracle: IOracle): string => {
-  const n = d(oracle.d)
-  let out = 'No match'
-  oracle.table.forEach(item => {
-    if (item.match.length === 1 && item.match[0] === n) {
-      out = item.text
-      return
-    }
+  let out = 'No match';
 
-    if (n >= item.match[0] && n <= item.match[1]) {
-      out = item.text
-    }
-  })
-  return out
-}
+  const roll = (): string => {
+    let result = '';
+    const n = d(oracle.d);
+
+    oracle.table.forEach((item) => {
+      if (item.match.length === 1 && item.match[0] === n) {
+        result = item.text;
+        return;
+      }
+
+      if (n >= item.match[0] && n <= item.match[1]) {
+        result = item.text;
+      }
+    });
+
+    return result;
+  };
+
+  out = roll();
+  while (/roll twice/i.test(out)) {
+    out = `${roll()}, ${roll()}`;
+  }
+  return out;
+};

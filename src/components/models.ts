@@ -15,6 +15,9 @@ export interface IConfig {
   current: string;
   index: IIndexItem[];
   edit: boolean;
+  saving: boolean;
+  map: number;
+  mapLoading?: boolean;
 }
 
 // Stats and Tracks
@@ -113,6 +116,7 @@ export interface IAsset {
 
 export interface ICharacter {
   name: string;
+  location: string;
   xp: number;
   stats: IStats;
   tracks: ITracks;
@@ -126,20 +130,37 @@ export interface ICharacter {
 export interface IJournalEntry {
   title: string;
   content: string;
-  pinned?: boolean
+  pinned?: boolean;
 }
 
 export interface ILocation {
   name: string;
   region: string;
-  description: string;
+  type: string; // Location table
+  descriptor: string;
   trouble: string;
+  notes: string;
+}
 
+export enum EKin {
+  Ironlander = 'Ironlander',
+  Elf = 'Elf',
+  Giant = 'Giant',
+  Varou = 'Varou',
+  Troll = 'Troll',
 }
 
 export interface INPC {
   name: string;
-  description: string;
+  pronouns?: string;
+  kin: string;
+  bond: boolean;
+  role: string;
+  goal: string;
+  descriptor: string;
+  disposition: string;
+  activity: string;
+  notes: string;
   track?: IProgressTrack;
 }
 
@@ -183,23 +204,78 @@ export interface ISite {
   denizens: IDenizens;
 }
 
+// SearchResults as follows:
+// [map: number][cell: string][objectType: string]number[] <- object indices
+export interface ISearchResults {
+  [index: number]: {
+    [index: string]: {
+      [index: string]: number[];
+    };
+  };
+}
+
+export enum ECellStatus {
+  Empty = 'empty',
+  Route = 'route',
+  Location = 'location',
+}
+
+// Must correspond to the item section keys in IMapCell
+export enum EMapItems {
+  Sites = 'sites',
+  Locations = 'locations',
+  NPCs = 'npcs',
+}
+
+export interface IMapCell {
+  id: string;
+  name: string;
+  stat: ECellStatus;
+  sites: ISite[];
+  locations: ILocation[];
+  npcs: INPC[];
+}
+
+export interface IMap {
+  name: string;
+  image: string;
+  height: number;
+  width: number;
+  hexH?: number;
+  hexW?: number;
+  hexSize: number;
+  hexFlat?: boolean;
+  scrollX?: number;
+  scrollY?: number;
+  zoom: number;
+  fonts: {
+    label: {
+      size: number;
+    };
+    search: {
+      size: number;
+    };
+  };
+  notes: string;
+  player?: string;
+  cells: { [index: string]: IMapCell };
+}
+
 export interface ICampaign {
   id: string;
   name: string;
   character: ICharacter;
   progressTracks: IProgressTrack[];
   journal: IJournalEntry[];
-  npcs: INPC[];
-  locations: ILocation[];
+  maps: IMap[];
   truths: ITruths;
-  sites: ISite[];
 }
 
 // Moves
 export interface IMove {
   name: string;
-  source: string
-  text: string,
+  source: string;
+  text: string;
   keywords: string;
   oracles?: string[];
 }
@@ -219,21 +295,21 @@ export interface IOracle {
 // Rolls
 export interface IRollData {
   action: {
-    die: number,
-    score: number,
+    die: number;
+    score: number;
     color: string;
-  },
+  };
   challenge: {
     die1: {
       roll: number;
       color: string;
-    },
+    };
     die2: {
       roll: number;
       color: string;
-    },
-    match: boolean,
-  },
+    };
+    match: boolean;
+  };
   progress: boolean;
   result: string;
 }

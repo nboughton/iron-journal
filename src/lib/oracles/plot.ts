@@ -1213,7 +1213,7 @@ export const Plot: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Combat Actions': {
+  CombatAction: {
     name: 'Combat Actions',
     d: 100,
     table: [
@@ -1344,7 +1344,7 @@ export const Plot: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Settlement Trouble': {
+  SettlementTrouble: {
     name: 'Settlement Trouble',
     d: 100,
     table: [
@@ -1672,7 +1672,7 @@ export const Plot: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Major Plot Twist': {
+  MajorPlotTwist: {
     name: 'Major Plot Twist',
     d: 100,
     table: [
@@ -1818,7 +1818,7 @@ export const Plot: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Mystic Backlash': {
+  MysticBacklash: {
     name: 'Mystic Backlash',
     d: 100,
     table: [
@@ -1999,8 +1999,8 @@ export const Plot: { [index: string]: IOracle } = {
       }
     ]
   },
-  'Challenge Rank': {
-    name: 'Challenge Range',
+  ChallengeRank: {
+    name: 'Challenge Rank',
     d: 100,
     table: [
       {

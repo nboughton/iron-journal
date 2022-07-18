@@ -4,25 +4,31 @@
       <q-toolbar>
         <q-btn dense flat icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-          <q-input input-class="text-h5" v-model="campaign.data.name" borderless />
+        <q-toolbar-title class="text-h6 norse">
+          IRON JOURNAL <span class="title-pipe">|</span> IRONSWORN
+          <!--q-input input-class="text-h5" v-model="campaign.data.name" borderless /-->
         </q-toolbar-title>
+
+        <q-btn v-if="config.data.saving" icon="save" flat dense disable />
+
         <q-btn icon="mdi-dice-6" flat dense @click="showRoller = !showRoller">
           <q-tooltip>Toggle Dice Roller</q-tooltip>
         </q-btn>
+
         <q-toggle icon="delete" v-model="config.data.edit">
           <q-tooltip>Toggle Delete buttons</q-tooltip>
         </q-toggle>
-        <q-btn dense flat icon="edit_note" @click="toggleRightDrawer" />
+
+        <q-btn dense flat icon="edit_note" @click="toggleRightDrawer">
+          <q-tooltip>Toggle right drawer for Oracles, Moves and Journal</q-tooltip>
+        </q-btn>
       </q-toolbar>
 
       <q-tabs align="center" dense>
-        <!--q-route-tab to="/tale" label="The Tale" /-->
-        <q-route-tab to="/truths" label="Truths" />
+        <q-route-tab to="/campaign" label="Campaign" />
         <q-route-tab to="/" :label="campaign.data.character.name" />
-        <q-route-tab to="/npcs" label="NPCs" />
-        <q-route-tab to="/locations" label="Locations" />
-        <q-route-tab to="/sites" label="Delves" />
+        <q-route-tab to="/challenges" label="Challenges" />
+        <q-route-tab to="/world" label="World" />
       </q-tabs>
     </q-header>
 
@@ -111,7 +117,7 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" :width="width" bordered>
+    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" :width="width" bordered id="rightDrawer">
       <!-- right drawer content -->
       <div class="row">
         <q-expansion-item class="col-12">
@@ -132,6 +138,15 @@
       </div>
 
       <journal />
+
+      <q-btn
+        class="journal-to-top"
+        fab
+        color="primary"
+        @click="scrollTo('rightDrawer')"
+        icon="mdi-arrow-up"
+        size="sm"
+      />
     </q-drawer>
 
     <q-page-container>
@@ -193,7 +208,7 @@
     </q-dialog>
 
     <q-dialog v-model="showAbout">
-      <q-card class="my-card">
+      <q-card class="card-bg">
         <q-card-section class="row bg-secondary text-h6 justify-between">
           <div class="col-grow">About</div>
           <q-btn class="col-shrink" flat dense icon="close" @click="showAbout = false" />
@@ -204,14 +219,22 @@
             Ironsworn and Ironsworn Delve are &copy;
             <a href="https://www.ironswornrpg.com">Shawn Tomkin</a>
           </div>
+
           <div class="q-my-sm">
             Code &copy;
             <a href="https://twitter.com/tiberianpun">Nick Boughton</a>, 2021
           </div>
+
+          <div class="q-my-sm">
+            Made with icons from <a href="https://game-icons.net/">game-icons.net</a> by
+            <a href="https://lorcblog.blogspot.com/">Lorc</a> and <a href="https://delapouite.com/">Delapouite</a>
+          </div>
+
           <div class="q-my-sm">
             If you like this app and want to say thanks you can
             <a href="https://ko-fi.com/tiberianpun">buy me a coffee</a>
           </div>
+
           <div class="q-my-sm">
             With extra thanks to
             <a href="https://twitter.com/r_sek">rsek</a> for the amazing
@@ -228,14 +251,16 @@
 <script lang="ts">
 /* eslint-disable no-unused-vars */
 import { ref, defineComponent, computed } from 'vue';
+
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
-import { useQuasar } from 'quasar';
-import Oracles from 'src/components/Oracles.vue';
+import { scroll, useQuasar } from 'quasar';
+import { useAssets } from 'src/store/assets';
+
+import Journal from 'src/components/Journal/Journal.vue';
+import Oracles from 'src/components/Oracles/Oracles.vue';
 import Moves from 'src/components/Moves.vue';
 import Roller from 'src/components/Roller.vue';
-import { useAssets } from 'src/store/assets';
-import Journal from 'src/components/Journal.vue';
 
 export default defineComponent({
   components: { Oracles, Moves, Roller, Journal },
@@ -268,10 +293,9 @@ export default defineComponent({
 
     const $q = useQuasar();
     const width = computed((): number => {
-      if ($q.screen.lt.sm || $q.platform.is.mobile) {
-        return Math.floor($q.screen.width * 0.9);
-      }
-      return Math.floor($q.screen.width * 0.4);
+      return !$q.platform.is.ipad && ($q.screen.lt.sm || $q.platform.is.mobile)
+        ? Math.floor($q.screen.width * 0.9)
+        : Math.floor($q.screen.width * 0.4);
     });
     const btnSize = computed((): string => {
       if ($q.screen.lt.sm) {
@@ -282,6 +306,17 @@ export default defineComponent({
 
     const showRoller = ref(false);
     const showAbout = ref(false);
+
+    const { getScrollTarget, setVerticalScrollPosition } = scroll;
+    const scrollTo = (id: string) => {
+      const el = document.getElementById(id);
+      if (el !== null) {
+        const target = getScrollTarget(el);
+        const offset = el.offsetTop;
+        const duration = 200;
+        setVerticalScrollPosition(target, offset, duration);
+      }
+    };
 
     return {
       leftDrawerOpen,
@@ -313,6 +348,8 @@ export default defineComponent({
       showRoller,
       showAbout,
       btnSize,
+
+      scrollTo,
     };
   },
 });
@@ -325,16 +362,16 @@ export default defineComponent({
 .about-text a:visited
     color: $primary
 
-.journal-img
-  max-width: 100%
-  max-height: 300px
-  margin: 5px
+.journal-to-top
+  position: fixed
+  bottom: 10px
+  right: 10px
 
-.float-left
-  float: left
-  clear: right
-
-.float-right
-  float: right
-  clear: left
+.title-pipe
+  margin: 0
+  padding: 0
+  margin-left: 10px
+  margin-right: 10px
+  text-shadow: 1px 1px 1px $dark
+  color: darkgrey
 </style>

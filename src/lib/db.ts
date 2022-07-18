@@ -1,13 +1,13 @@
 import { IConfig, ICampaign, IAsset } from 'components/models'
 import Dexie from 'dexie'
 
-export class IronswornDB extends Dexie {
+export class IronJournalDB extends Dexie {
   config: Dexie.Table<IConfig, number>;
   campaign: Dexie.Table<ICampaign, string>;
   assets: Dexie.Table<IAsset, string>;
 
   constructor() {
-    super('IronswornDB')
+    super('IronJournalDB')
     this.version(1).stores({
       config: '&id',
       campaign: '&id'
@@ -25,4 +25,4 @@ export class IronswornDB extends Dexie {
   }
 }
 
-export const db = new IronswornDB()
+export const db = new IronJournalDB()

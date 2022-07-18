@@ -91,7 +91,7 @@ import { useConfig } from 'src/store/config';
 import { icon } from 'src/lib/icons';
 
 import ProgressTrack from 'src/components/Tracks/ProgressTrack.vue';
-import IInput from 'src/components/IInput.vue';
+import IInput from 'src/components/Widgets/IInput.vue';
 import Controls from 'src/components/World/Controls.vue';
 
 export default defineComponent({

@@ -106,7 +106,7 @@
             default-opened
             v-for="(cell, cID) in map"
             :key="cID"
-            :label="CellLabel(campaign.data.maps[+mID].cells[cID], cID).label"
+            :label="CellLabel(campaign.data.maps[+mID].cells[cID], cID as string).label"
           >
             <div class="q-pt-xs" />
             <q-card-section class="q-px-xs q-py-none" v-for="(itemIDs, oType) in cell" :key="oType">
@@ -114,21 +114,21 @@
                 <div v-if="oType === EMapItems.Locations">
                   <w-location
                     v-model="campaign.data.maps[+mID].cells[cID][oType][+oID]"
-                    @delete="campaign.removeObject(oType, +mID, cID, oID)"
+                    @delete="campaign.removeObject(oType, +mID, cID as string, oID)"
                   />
                 </div>
 
                 <div v-if="oType === EMapItems.Sites">
                   <w-site
                     v-model="campaign.data.maps[+mID].cells[cID][oType][+oID]"
-                    @delete="campaign.removeObject(oType, +mID, cID, oID)"
+                    @delete="campaign.removeObject(oType, +mID, cID as string, oID)"
                   />
                 </div>
 
                 <div v-if="oType === EMapItems.NPCs">
                   <w-npc
                     v-model="campaign.data.maps[+mID].cells[cID][oType][+oID]"
-                    @delete="campaign.removeObject(oType, +mID, cID, oID)"
+                    @delete="campaign.removeObject(oType, +mID, cID as string, oID)"
                   />
                 </div>
               </div>
@@ -203,7 +203,7 @@ import { CellLabel, NewMap } from 'src/lib/world';
 import { estimateHexH, estimateHexW } from 'src/lib/util';
 
 import HexMap from 'src/components/World/HexMap.vue';
-import IInput from 'src/components/IInput.vue';
+import IInput from 'src/components/Widgets/IInput.vue';
 import WSite from 'src/components/World/WSite.vue';
 import WNpc from 'src/components/World/WNpc.vue';
 import WLocation from 'src/components/World/WLocation.vue';

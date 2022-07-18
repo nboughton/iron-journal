@@ -31,7 +31,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
 
-import { ECellStatus, ISelectOpt } from './models';
+import { ECellStatus, ISelectOpt } from '../models';
 
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';

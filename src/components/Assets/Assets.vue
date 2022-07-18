@@ -25,7 +25,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item v-for="(a, i) in cards" :key="i" clickable v-ripple @click="selectAsset(i)">
+            <q-item v-for="(a, i) in cards" :key="i" clickable v-ripple @click="selectAsset(i as string)">
               <!--q-item-section avatar>
                 <q-avatar :icon="icon.asset(a.title)" size="lg" />
               </q-item-section-->
@@ -49,7 +49,7 @@
                   flat
                   dense
                   @click="
-                    editID = ca.id;
+                    editID = ca.id as string;
                     showEditor = true;
                   "
                 />
@@ -104,7 +104,7 @@ import { Assets } from 'src/lib/assets';
 // import { icon } from 'src/lib/icons';
 
 import AssetEditor from './AssetEditor.vue';
-import Hexbox from '../Hexbox.vue';
+import Hexbox from '../Widgets/Hexbox.vue';
 
 export default defineComponent({
   name: 'Assets',

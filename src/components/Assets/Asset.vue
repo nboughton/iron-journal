@@ -38,8 +38,8 @@
             class="q-mb-sm"
             dense
             v-if="data.items[index].input"
-            :label="data.items[index].input.label"
-            v-model="data.items[index].input.text"
+            :label="data.items[index].input!.label"
+            v-model="data.items[index].input!.text"
           />
         </div>
       </div>
@@ -59,7 +59,7 @@ import { useConfig } from 'src/store/config';
 // import { icon } from 'src/lib/icons';
 
 import ResourceTrack from '../Tracks/ResourceTrack.vue';
-import Hexbox from '../Hexbox.vue';
+import Hexbox from '../Widgets/Hexbox.vue';
 
 export default defineComponent({
   components: { ResourceTrack, Hexbox },

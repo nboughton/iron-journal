@@ -2,7 +2,7 @@
   <q-card>
     <!-- editor column-->
     <q-card-section class="row full-width items-baseline">
-      <q-input class="col-xs-12 col-md-6" label="Name" v-model="data.name" />
+      <q-input class="col-xs-12 col-md-6" label="Name" v-model="data.Name" />
       <div class="col-xs-12 col-md-6">
         <div class="row items-baseline q-gutter-xs">
           <span class="col-shrink">Dice:</span>
@@ -21,10 +21,10 @@
         <div class="col-grow text-bold">Add Row</div>
         <q-btn class="col-shrink" icon="add_circle" flat dense @click="addRow" />
       </div>
-      <div class="row q-ml-sm items-center" v-for="(row, index) of data.table" :key="index">
-        <q-input class="col-2" type="number" v-model.number="data.table![index].match[0]" label="Floor" dense />
-        <q-input class="col-2" type="number" v-model.number="data.table![index].match[1]" label="Ceiling" dense />
-        <q-input class="col" v-model="data.table![index].text" label="Result Text" dense />
+      <div class="row q-ml-sm items-center" v-for="(row, index) of data.Table" :key="index">
+        <q-input class="col-2" type="number" v-model.number="data.Table![index].Floor" label="Floor" dense />
+        <q-input class="col-2" type="number" v-model.number="data.Table![index].Ceiling" label="Ceiling" dense />
+        <q-input class="col" v-model="data.Table![index].Result" label="Result Text" dense />
         <q-icon class="col-shrink q-px-xs" v-if="badRows[index]" name="error" color="negative" size="sm">
           <q-tooltip>{{ badRows[index].join(', ') }}</q-tooltip>
         </q-icon>
@@ -76,7 +76,7 @@ export default defineComponent({
     const data = ref(props.oracle);
 
     // This is lazy, probably needs to be more robust
-    const splitD = data.value.Dice.split('d');
+    const splitD = data.value.Dice?.split('d') as string[];
     const diceNum = ref(+splitD[0]);
     const diceSize = ref(+splitD[1]);
     watch(
@@ -85,15 +85,16 @@ export default defineComponent({
     );
 
     const addRow = () => {
-      if (!data.value.table) data.value.table = [];
-      if (data.value.table) {
-        if (data.value.table.length === 0) {
-          data.value.table.push({ match: [diceNum.value, diceNum.value + 1], text: '' });
+      if (!data.value.Table) data.value.Table = [];
+      if (data.value.Table) {
+        if (data.value.Table.length === 0) {
+          data.value.Table.push({ Floor: diceNum.value, Ceiling: diceNum.value + 1, Result: '' });
         } else {
-          const n = data.value.table[data.value.table.length - 1].match[1];
-          data.value.table.push({
-            match: [n + 1, n + 2],
-            text: '',
+          const n = data.value.Table[data.value.Table.length - 1].Ceiling;
+          data.value.Table.push({
+            Floor: n + 1,
+            Ceiling: n + 2,
+            Result: '',
           });
         }
       }
@@ -110,7 +111,7 @@ export default defineComponent({
             label: 'Yes',
             color: 'negative',
             handler: () => {
-              data.value.table.splice(index, 1);
+              data.value.Table?.splice(index, 1);
             },
           },
           {
@@ -134,9 +135,9 @@ export default defineComponent({
 
       const numbers: { [index: number]: number } = {};
 
-      data.value.table.forEach((r, i) => {
-        const f = r.match[0];
-        const c = r.match[1];
+      data.value.Table?.forEach((r, i) => {
+        const f = r.Floor;
+        const c = r.Ceiling;
 
         if (c < f) {
           if (!rows[i]) rows[i] = [];

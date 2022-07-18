@@ -7,7 +7,7 @@
     <o-input
       v-for="(o, i) of oracles.data"
       :key="i"
-      :label="o.name"
+      :label="o.Name"
       v-model="results[i]"
       custom
       @edit="$emit('edit', o.$id)"

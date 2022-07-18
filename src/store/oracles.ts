@@ -6,8 +6,9 @@ import { stripTags, now } from 'src/lib/util';
 
 const strip = (oracles: ICustomOracle[]): ICustomOracle[] => {
   oracles.forEach((o, i) => {
-    oracles[i].table.forEach((item, index) => {
-      if (oracles[i].table) oracles[i].table[index].text = stripTags(item.text);
+    oracles[i].Table?.forEach((row, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (oracles[i].Table != undefined) oracles[i].Table![index].Result = stripTags(row.Result);
     });
   });
 
@@ -39,7 +40,8 @@ export const useOracles = defineStore({
 
     async save(oracle: ICustomOracle) {
       // Strip script tags from item texts
-      oracle.table.forEach((r, i) => (oracle.table[i].text = stripTags(r.text)));
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      oracle.Table?.forEach((r, i) => (oracle.Table![i].Result = stripTags(r.Result)));
 
       const storeCopy = JSON.parse(JSON.stringify(oracle)) as ICustomOracle;
       await db.oracles.put(storeCopy).catch((err) => console.log(err));

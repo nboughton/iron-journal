@@ -292,9 +292,19 @@ export interface IOracle {
   table: ITableItem[];
 }
 
-export interface ICustomOracle extends IOracle {
+export interface IRow {
+  Floor: number;
+  Ceiling: number;
+  Result: string;
+}
+export interface ICustomOracle {
   $id: string;
-  Dice: string;
+  Name: string;
+  Dice?: string;
+  Display: object;
+  Category: string;
+  Source: object;
+  Table?: IRow[];
 }
 
 // Rolls

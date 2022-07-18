@@ -1,5 +1,6 @@
 <template>
   <div class="row items-center">
+    <clipboard-btn :data="data" />
     <q-input class="col-grow" :label="label" v-model="data" dense>
       <template v-slot:append v-if="reroll">
         <span class="text-subtitle2"><q-icon name="mdi-autorenew" />1-{{ maxRerolls }}</span>
@@ -16,8 +17,12 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+
+import ClipboardBtn from '../Widgets/ClipboardBtn.vue';
+
 export default defineComponent({
   name: 'OInput',
+  components: { ClipboardBtn },
   props: {
     label: {
       type: String,

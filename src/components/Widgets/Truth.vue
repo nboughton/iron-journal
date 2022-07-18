@@ -24,7 +24,7 @@ import { ISelectOpt } from 'src/components/models';
 
 import { Truths } from 'src/lib/truths';
 
-import IInput from 'src/components/IInput.vue';
+import IInput from 'src/components/Widgets/IInput.vue';
 
 export default defineComponent({
   name: 'Truths',

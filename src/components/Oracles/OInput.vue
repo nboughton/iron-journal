@@ -5,7 +5,12 @@
         <span class="text-subtitle2"><q-icon name="mdi-autorenew" />1-{{ maxRerolls }}</span>
       </template>
     </q-input>
-    <q-btn v-if="!noRoll" icon="mdi-dice-6" flat dense @click="$emit('roll')" />
+    <q-btn v-if="!noRoll" icon="mdi-dice-6" flat dense @click="$emit('roll')">
+      <q-tooltip>Roll oracle</q-tooltip>
+    </q-btn>
+    <q-btn v-if="custom" icon="edit" flat dense @click="$emit('edit')">
+      <q-tooltip>Edit custom oracle</q-tooltip>
+    </q-btn>
   </div>
 </template>
 
@@ -32,8 +37,11 @@ export default defineComponent({
     noRoll: {
       type: Boolean,
     },
+    custom: {
+      type: Boolean,
+    },
   },
-  emits: ['update:modelValue', 'roll'],
+  emits: ['update:modelValue', 'roll', 'edit'],
   setup(props, { emit }) {
     const data = computed({
       get() {

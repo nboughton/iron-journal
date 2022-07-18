@@ -292,6 +292,11 @@ export interface IOracle {
   table: ITableItem[];
 }
 
+export interface ICustomOracle extends IOracle {
+  $id: string;
+  Dice: string;
+}
+
 // Rolls
 export interface IRollData {
   action: {

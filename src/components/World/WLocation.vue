@@ -55,7 +55,7 @@ import { icon } from 'src/lib/icons';
 import { oracleOpts } from 'src/lib/util';
 import { Location } from 'src/lib/oracles/location';
 
-import IInput from 'src/components/IInput.vue';
+import IInput from 'src/components/Widgets/IInput.vue';
 import Controls from 'src/components/World/Controls.vue';
 
 export default defineComponent({

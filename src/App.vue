@@ -1,7 +1,7 @@
 <template>
   <router-view v-if="loaded" />
   <div v-else>
-    <div class="column q-pa-xl text-h4 self-center" style="height: 100% width: 100%">
+    <div class="column q-pa-xl text-h4 self-center" style="height: 100%; width: 100%" v-on:click="skipIntro">
       <div class="norse" v-for="(line, i) in msg" :key="i">
         {{ line }}
       </div>
@@ -15,19 +15,25 @@ import { useConfig } from './store/config';
 import { useCampaign } from './store/campaign';
 import { debounce, useQuasar } from 'quasar';
 import { useAssets } from './store/assets';
-
+import { useOracles } from './store/oracles';
 import { sleep } from './lib/util';
 
 export default defineComponent({
   name: 'App',
   setup() {
+    let skipIntro = () => {
+      /* placeholder */
+    };
+    const skip = new Promise<void>((resolve) => (skipIntro = resolve));
+    const skippableSleep = (ms: number) => Promise.race([skip, sleep(ms)]);
+
     const loaded = ref(false);
     const msg = ref(<string[]>['']);
 
     const writeLine = async (text: string) => {
       msg.value.push('');
       for (let i = 0; i < text.length; i++) {
-        await sleep(40);
+        await skippableSleep(40);
         msg.value[msg.value.length - 1] += text.charAt(i);
       }
     };
@@ -36,20 +42,29 @@ export default defineComponent({
     $q.dark.set(true);
 
     const campaign = useCampaign();
-    onMounted(async () => {
+
+    const renderIntro = async () => {
       await writeLine('Checking the perimeter...');
-      await sleep(500);
+      await skippableSleep(500);
       await writeLine('Tasting the wind...');
-      await campaign.populateStore().catch((err) => console.log(err));
-      await sleep(500);
-
+      await skippableSleep(500);
       await writeLine('Sharpening our blades...');
-      const assets = useAssets();
-      await assets.populateStore().catch((err) => console.log(err));
-      await sleep(500);
-
+      await skippableSleep(500);
       await writeLine('Your time has come, ' + campaign.data.character.name);
       await sleep(500);
+    };
+
+    const initialiseData = async () => {
+      const assets = useAssets();
+      const oracles = useOracles();
+
+      await campaign.populateStore().catch((err) => console.log(err));
+      await assets.populateStore().catch((err) => console.log(err));
+      await oracles.populateStore().catch((err) => console.log(err));
+    };
+
+    onMounted(async () => {
+      await Promise.all([initialiseData(), renderIntro()]);
       loaded.value = true;
     });
 
@@ -82,6 +97,7 @@ export default defineComponent({
     );
 
     return {
+      skipIntro,
       loaded,
       msg,
     };

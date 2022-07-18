@@ -22,8 +22,8 @@ import { defineComponent } from 'vue';
 
 import { useCampaign } from 'src/store/campaign';
 
-import Truth from 'src/components/Truth.vue';
-import IInput from 'src/components/IInput.vue';
+import Truth from 'src/components/Widgets/Truth.vue';
+import IInput from 'src/components/Widgets/IInput.vue';
 
 export default defineComponent({
   name: 'Truths',

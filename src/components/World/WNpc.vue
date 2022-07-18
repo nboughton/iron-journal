@@ -56,7 +56,7 @@ import { icon } from 'src/lib/icons';
 
 import ProgressTrack from '../Tracks/ProgressTrack.vue';
 import Controls from './Controls.vue';
-import IInput from '../IInput.vue';
+import IInput from '../Widgets/IInput.vue';
 
 export default defineComponent({
   components: { IInput, ProgressTrack, Controls },

@@ -142,7 +142,7 @@
     <q-drawer show-if-above v-model="rightDrawerOpen" side="right" :width="width" bordered id="rightDrawer">
       <!-- right drawer content -->
       <div class="row">
-        <q-expansion-item class="col-12">
+        <q-expansion-item class="col-12" id="oracles">
           <template v-slot:header>
             <div class="text-h5 col-grow">ORACLES</div>
           </template>
@@ -151,7 +151,7 @@
       </div>
 
       <div class="row">
-        <q-expansion-item class="col-12">
+        <q-expansion-item class="col-12" id="moves">
           <template v-slot:header>
             <div class="text-h5 col-grow">MOVES</div>
           </template>
@@ -159,16 +159,20 @@
         </q-expansion-item>
       </div>
 
+      <div id="journal" />
       <journal />
 
-      <q-btn
-        class="journal-to-top"
-        fab
-        color="primary"
-        @click="scrollTo('rightDrawer')"
-        icon="mdi-arrow-up"
-        size="sm"
-      />
+      <q-fab color="primary" icon="keyboard_arrow_left" direction="left" class="journal-to-top">
+        <q-fab-action color="primary" @click="scrollTo('oracles')" icon="mdi-dice-multiple">
+          <q-tooltip>Scroll to Oracles</q-tooltip>
+        </q-fab-action>
+        <q-fab-action color="primary" @click="scrollTo('moves')" icon="mdi-file-document-multiple">
+          <q-tooltip>Scroll to Moves</q-tooltip>
+        </q-fab-action>
+        <q-fab-action color="primary" @click="scrollTo('journal')" icon="mdi-notebook">
+          <q-tooltip>Scroll to Journal</q-tooltip>
+        </q-fab-action>
+      </q-fab>
     </q-drawer>
 
     <q-page-container>

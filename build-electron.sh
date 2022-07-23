@@ -18,4 +18,4 @@ tar czvf IronJournal-linux-$version.tar.gz 'Iron Journal-linux-x64'
 
 echo "Tarring Mac build in 3s"
 sleep 3
-tar czvf IronJournal-darwin-$version.tar.gz 'Iron Journal-darwin-x64'
+tar czvf IronJournal-OSX-$version.tar.gz 'Iron Journal-darwin-x64'

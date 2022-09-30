@@ -3,6 +3,8 @@ import { EMapItems, ICampaign, ILocation, INPC, ISite } from 'components/models'
 import { NewCampaign } from 'src/lib/campaign';
 import { useConfig } from './config';
 import { db } from 'src/lib/db';
+import { now } from 'src/lib/util';
+import { exportFile } from 'quasar';
 
 export const useCampaign = defineStore({
   id: 'campaign',
@@ -141,20 +143,10 @@ export const useCampaign = defineStore({
 
     async exportData() {
       const data = JSON.stringify(await db.campaign.toArray());
-      const blob = new Blob([data], { type: 'text/plain' });
-      const event = new MouseEvent('click', {
-        view: window,
-        bubbles: true,
-        cancelable: false,
+      const status = exportFile(`Ironsworn-campaign-${now()}.json`, data, {
+        mimeType: 'application/json',
       });
-      const anchor = document.createElement('a');
-
-      const date = new Date();
-      anchor.download = `ironsworn-campaign-${date.getTime() / 1000}.json`;
-      anchor.href = window.URL.createObjectURL(blob);
-      anchor.dataset.downloadurl = ['text/json', anchor.download, anchor.href].join(':');
-
-      anchor.dispatchEvent(event);
+      if (status != true) alert(status);
     },
 
     async loadData(file: File) {

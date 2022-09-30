@@ -61,7 +61,7 @@ export const useAssets = defineStore({
       });
 
       const data = JSON.stringify(assets);
-      const status = exportFile(`Starforged-campaign-${now()}.json`, data, {
+      const status = exportFile(`IronJournal-assets-${now()}.json`, data, {
         mimeType: 'application/json',
       });
       if (status != true) alert(status);

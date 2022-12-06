@@ -16,8 +16,15 @@
           <q-tooltip>Add a journal entry</q-tooltip>
         </q-btn>
       </template>
+
       <template v-slot:prepend>
         <q-icon name="search" />
+      </template>
+
+      <template v-slot:after>
+        <q-btn icon="sort" flat dense @click="journalSortByTitle">
+          <q-tooltip>Sort journal entries by title</q-tooltip>
+        </q-btn>
       </template>
     </q-input>
   </div>
@@ -90,6 +97,7 @@ import { defineComponent, ref } from 'vue';
 
 import { IJournalEntry } from 'src/components/models';
 
+import { useQuasar } from 'quasar';
 import { useCampaign } from 'src/store/campaign';
 import { useConfig } from 'src/store/config';
 
@@ -129,6 +137,16 @@ export default defineComponent({
       return false;
     };
 
+    const $q = useQuasar();
+    const journalSortByTitle = () =>
+      $q
+        .dialog({
+          title: 'Confirm',
+          message: 'This will re-order your journal entries and cannot be undone. Are you sure?',
+          cancel: true,
+        })
+        .onOk(() => campaign.data.journal.sort((a: IJournalEntry, b: IJournalEntry) => b.title.localeCompare(a.title)));
+
     enum imageFloat {
       Left = 'left',
       Right = 'right',
@@ -158,26 +176,17 @@ export default defineComponent({
       showImageLoad.value = false;
     };
 
-    // pin, pinIcon
-    const pinIcon = (index: number): string => {
-      return campaign.data.journal[index].pinned ? 'mdi-pin' : 'mdi-pin-off';
-    };
-    const pin = (index: number) => {
-      campaign.data.journal[index].pinned = !campaign.data.journal[index].pinned;
-    };
-
     return {
       showJournal,
       addJournal,
       removeJournal,
+      journalSortByTitle,
       loadImage,
       showImageLoad,
       imageFloat,
       imageToLoad,
       imageFloatSelect,
       journalEntryID,
-      pinIcon,
-      pin,
       filter,
       config,
       campaign,

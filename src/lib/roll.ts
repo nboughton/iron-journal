@@ -28,6 +28,8 @@ export const NewRollData = (): IRollData => {
 };
 
 export const updateResults = (r: IRollData): IRollData => {
+  if (r.action.score > 10) r.action.score = 10
+
   if (r.action.score > r.challenge.die1.roll && r.action.score > r.challenge.die2.roll) {
     r.result = 'Strong Hit';
     r.action.color = 'text-positive';
